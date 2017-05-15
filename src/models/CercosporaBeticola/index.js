@@ -35,7 +35,6 @@ const noData = data => {
 };
 
 const riskLevel = (text, record, i) => {
-  console.log(text, record, i);
   return (
     <div>
       <span style={{ color: record.colorBar }}>{text}</span>
@@ -168,10 +167,11 @@ export default class CercosporaBeticola extends Component {
       ACISData,
       subject,
       station,
-      areRequiredFieldsSet
+      areRequiredFieldsSet,
+      cercosporaBeticola,
+      isGraph
     } = this.props.store.app;
-    const { cercosporaBeticola, isGraph } = this.props.store.app;
-    console.log(takeRight(cercosporaBeticola, 8));
+
     return (
       <Flex column>
         <Box>
