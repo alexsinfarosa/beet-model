@@ -20,7 +20,7 @@ const forecastText = date => {
   return (
     <div>
       <div>{date.split("-")[0]}</div>
-      <div style={{ fontSize: ".6rem", color: "red" }}>
+      <div style={{ color: "red" }}>
         {date.split("-")[1]}
       </div>
     </div>
@@ -173,6 +173,7 @@ export default class CercosporaBeticola extends Component {
       cercosporaBeticola,
       isGraph
     } = this.props.store.app;
+    const { mobile } = this.props;
 
     const lastDay = cercosporaBeticola[cercosporaBeticola.length - 1];
     let totalMissingDays;
@@ -204,6 +205,7 @@ export default class CercosporaBeticola extends Component {
 
             <Table
               bordered
+              size={mobile ? "small" : "middle"}
               columns={columns}
               rowKey={record => record.dateTable}
               loading={ACISData.length === 0}

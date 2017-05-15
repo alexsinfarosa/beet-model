@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import { format } from "date-fns";
+// import findLast from "lodash/findLast";
+import findLastIndex from "lodash/findLastIndex";
+import addDays from "date-fns/add_days";
 
 import { Flex, Box } from "reflexbox";
 
@@ -26,11 +29,22 @@ export default class Graph extends Component {
     const { cercosporaBeticola } = this.props.store.app;
 
     // Potential bug. Chartjs needs a javascript array
-    let data = [];
-    data = cercosporaBeticola.map(e => e);
-    const aboveZero = data.find(day => day.a2Day > 0);
-    const indexAboveZero = data.findIndex(day => day.a2Day > 0);
-    const a2DayDataAboveZero = data.slice(indexAboveZero - 1);
+    let a2DayDataAboveZero;
+    const data = cercosporaBeticola.map(e => e);
+    const firstIndexAboveZero = data.findIndex(day => day.a2Day > 0);
+    const lastDayAtZero = data[firstIndexAboveZero - 1];
+
+    const lastIndexAboveZero = findLastIndex(data, day => day.a2Day > 0);
+    const firstDayAtZero = data[lastIndexAboveZero];
+    console.log(firstDayAtZero);
+
+    a2DayDataAboveZero = data.slice(
+      firstIndexAboveZero,
+      lastIndexAboveZero + 1
+    );
+    if (a2DayDataAboveZero.length < 14) {
+      a2DayDataAboveZero = data.slice(firstIndexAboveZero - 1);
+    }
 
     // Change the aspect ratio when viewed on different devices
     let aspect;
@@ -62,19 +76,26 @@ export default class Graph extends Component {
       <Flex mt={4} mb={4} column>
         <h2>2-Day Infection Values Graph</h2>
         <br />
-        {aboveZero &&
+        {firstDayAtZero &&
           <h4>
-            All 2-Day values from
+            From
             {" "}
             <span style={{ color: "black" }}>
               Jannuary 1st
             </span>
             {" "}to{" "}
             <span style={{ color: "black" }}>
-              {aboveZero.dateText}
+              {lastDayAtZero.dateText}
             </span>
-            {" "}
-            are zero
+            {" "} and from {" "}
+            <span style={{ color: "black" }}>
+              {/* {addDays(firstDayAtZero.dateText, 1)} */}
+            </span>
+            {" "} to {" "}
+            <span style={{ color: "black" }}>
+              Dicember 31st,
+            </span>
+            {" "} 2-Day values are zero
           </h4>}
         <br />
         <Box
