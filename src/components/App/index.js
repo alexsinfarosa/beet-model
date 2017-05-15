@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import { when } from "mobx";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-
-// styled-components
 
 // components
 import Home from "views/Home";
@@ -29,16 +26,7 @@ class App extends Component {
   }
 
   render() {
-    // const repo = `/${window.location.pathname.split("/")[1]}`;
-    // console.log(repo);
-    return (
-      <Router>
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route render={() => <h1>Page Not Found!</h1>} />
-        </Switch>
-      </Router>
-    );
+    return <Home />;
   }
 }
 

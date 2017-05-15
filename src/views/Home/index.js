@@ -20,7 +20,7 @@ export default class Home extends Component {
     super(props);
 
     this.props.store.app.setSubjectFromLocalStorage(
-      JSON.parse(localStorage.getItem("berry")) || {}
+      JSON.parse(localStorage.getItem("beet")) || {}
     );
     autorun(() => this.runMainFunction());
   }

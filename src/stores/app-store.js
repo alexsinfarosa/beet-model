@@ -43,18 +43,17 @@ export default class AppStore {
   // Subject--------------------------------------------------------------
   @observable subjects = [
     {
-      name: "Strawberries",
-      diseases: ["botrytis", "anthracnose"],
-      graph: false
-    },
-    { name: "Blueberries", diseases: ["Blueberrie Maggot"], graph: true }
+      name: "Cercospora Beticola",
+      diseases: ["Cercospora Beticola"],
+      graph: true
+    }
   ];
   @observable subject = {};
   @action resetSubject = () => (this.subject = {});
   @action setSubjectFromLocalStorage = d => (this.subject = d);
   @action setSubject = d => {
     this.subject = this.subjects.find(subject => subject.name === d);
-    localStorage.setItem(`berry`, JSON.stringify(this.subject));
+    localStorage.setItem(`beet`, JSON.stringify(this.subject));
   };
 
   // State----------------------------------------------------------------------
@@ -105,7 +104,10 @@ export default class AppStore {
   @observable ACISData = [];
   @action setACISData = d => (this.ACISData = d);
 
-  // Strawberry model
-  @observable strawberries = [];
-  @action setStrawberries = d => this.strawberries.push(d);
+  @observable cercosporaBeticola = [];
+  @action resetCercospora = () => (this.cercosporaBeticola = []);
+  @action setCercosporaBeticola = d => this.cercosporaBeticola.push(d);
+
+  @observable barColor;
+  @action setBarColor = d => (this.barColor = d);
 }
