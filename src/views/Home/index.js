@@ -20,7 +20,11 @@ export default class Home extends Component {
     super(props);
 
     this.props.store.app.setSubjectFromLocalStorage(
-      JSON.parse(localStorage.getItem("beet")) || {}
+      JSON.parse(localStorage.getItem("beet")) || {
+        name: "Cercospora Beticola",
+        diseases: ["Cercospora Beticola"],
+        graph: true
+      }
     );
     autorun(() => this.runMainFunction());
   }
