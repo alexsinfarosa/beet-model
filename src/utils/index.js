@@ -125,22 +125,6 @@ export const avgTwoStringNumbers = (a, b) => {
   return Math.round((aNum + bNum) / 2).toString();
 };
 
-// It replaces non consecutive values in data with the average
-// of the left and the right values
-// export const replaceNonConsecutiveMissingValues = data => {
-//   return data.map((val, i) => {
-//     if (i === 0 && val === "M") {
-//       return data[i + 1];
-//     } else if (i === data.length - 1 && val === "M") {
-//       return data[i - 1];
-//     } else if (val === "M" && data[i - 1] !== "M" && data[i + 1] !== "M") {
-//       return avgTwoStringNumbers(data[i - 1], data[i + 1]);
-//     } else {
-//       return val;
-//     }
-//   });
-// };
-
 export const replaceNonConsecutiveMissingValues = data => {
   return data.map(day => {
     return day.map(param => {
@@ -403,6 +387,11 @@ export const linspaceMissingValues = data => {
   }
 };
 
+// Returns true if finds more than 3 missing values in array
+// const above3Ms = data => {
+//   return data.filter(e => e === "M").length > 3 ? false : true;
+// };
+
 // Returns the data array (MAIN FUNCTION) ---------------------------------------------------
 export const getData = async (
   protocol,
@@ -508,7 +497,7 @@ export const getData = async (
       startDate,
       endDate
     );
-    forecastData = replaceNonConsecutiveMissingValues(forecastData);
+    // forecastData = replaceNonConsecutiveMissingValues(forecastData);
     forecastData = noonToNoon(forecastData);
 
     // forecastData.map(day => day.map(p => console.log(p)));
@@ -540,6 +529,7 @@ export const getData = async (
   // Add to the results objects params that might be needed
   const base = 50;
   let cdd = 0;
+  let cumulativeMissingDays = 0;
   for (const [i, day] of results.entries()) {
     results[i]["base"] = base;
 
@@ -558,35 +548,54 @@ export const getData = async (
     results[i]["dateTable"] = dateTable;
 
     // average, min and max temperatures
-    const Tavg = average(day.tpFinal);
-    const Tmin = Math.min(...day.tpFinal);
-    const Tmax = Math.max(...day.tpFinal);
-    results[i]["Tavg"] = Tavg;
-    results[i]["Tmin"] = Tmin;
-    results[i]["Tmax"] = Tmax;
+    let Tmin, Tmax, Tavg;
+    if (day.tpFinal.filter(e => e === "M").length === 0) {
+      Tmin = Math.min(...day.tpFinal);
+      Tmax = Math.max(...day.tpFinal);
+      Tavg = average(day.tpFinal);
+      cumulativeMissingDays += 0;
+      results[i]["Tmin"] = Tmin;
+      results[i]["Tmax"] = Tmax;
+      results[i]["Tavg"] = Tavg;
+      results[i]["missingDay"] = false;
+      results[i]["cumulativeMissingDays"] = cumulativeMissingDays;
 
-    // calculate dd (degree day)
-    const dd = Tavg - base > 0 ? Tavg - base : 0;
-    results[i]["dd"] = dd;
+      // calculate dd (degree day)
+      const dd = Tavg - base > 0 ? Tavg - base : 0;
+      results[i]["dd"] = dd;
 
-    // calculate cdd (cumulative degree day)
-    cdd += dd;
-    results[i]["cdd"] = cdd;
+      // calculate cdd (cumulative degree day)
+      cdd += dd;
+      results[i]["cdd"] = cdd;
 
-    // returns relative humidity above or equal to 90% (RH >= 90)
-    const rhAboveValues = aboveEqualToValue(day.rhFinal, 90);
-    results[i]["rhAboveValues"] = rhAboveValues;
+      if (day.rhFinal.filter(e => e === "M").length === 0) {
+        // returns relative humidity above or equal to 90% (RH >= 90)
+        const rhAboveValues = aboveEqualToValue(day.rhFinal, 90);
+        results[i]["rhAboveValues"] = rhAboveValues;
 
-    // Number of hours where relative humidity is equal to or above 90%
-    const hrsRH = rhAboveValues.filter(e => e !== false).length;
-    results[i]["hrsRH"] = hrsRH;
+        // Number of hours where relative humidity is equal to or above 90%
+        const hrsRH = rhAboveValues.filter(e => e !== false).length;
+        results[i]["hrsRH"] = hrsRH;
 
-    // calculate dicv..
-    let dicv = 0;
-    if (Tavg >= 59 && Tavg <= 94 && hrsRH > 0) {
-      dicv = table[hrsRH.toString()][Tavg.toString()];
+        // calculate dicv..
+        let dicv = 0;
+        if (Tavg >= 59 && Tavg <= 94 && hrsRH > 0) {
+          dicv = table[hrsRH.toString()][Tavg.toString()];
+        }
+        results[i]["dicv"] = parseInt(dicv, 10);
+      }
+    } else {
+      cumulativeMissingDays += 1;
+      results[i]["Tmin"] = "No data";
+      results[i]["Tmax"] = "No data";
+      results[i]["Tavg"] = "No data";
+      results[i]["missingDay"] = true;
+      results[i]["cumulativeMissingDays"] = cumulativeMissingDays;
+      results[i]["rhAboveValues"] = "No data";
+      results[i]["hrsRH"] = "No data";
+      results[i]["dicv"] = 0.001;
     }
-    results[i]["dicv"] = dicv;
   }
+  // results.map(e => console.log(e));
   return results;
 };

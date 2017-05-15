@@ -35,6 +35,7 @@ const noData = data => {
 };
 
 const riskLevel = (text, record, i) => {
+  if (record.missingDay) return "No data";
   return (
     <div>
       <span style={{ color: record.colorBar }}>{text}</span>
@@ -92,7 +93,7 @@ const columns = [
         render: data => noData(data)
       },
       {
-        title: "Season",
+        title: `Season`,
         className: "table",
         dataIndex: "season",
         key: "season"
@@ -150,14 +151,16 @@ export default class CercosporaBeticola extends Component {
       data["dateTable"] = day.dateTable;
       data["dateGraph"] = day.dateGraph;
       data["dateText"] = day.dateText;
-      data["dicv"] = day.dicv;
-      data["a2Day"] = a2Day;
+      data["dicv"] = day.missingDay ? "No data" : parseInt(day.dicv, 10);
+      data["a2Day"] = parseInt(a2Day, 10);
       data["a2DayIR"] = a2DayIR;
       data["color"] = color;
       data["colorBar"] = colorBar;
-      data["a14Day"] = a14Day[13] === undefined ? "No Data" : a14Day[13];
-      data["a21Day"] = a21Day[20] === undefined ? "No Data" : a21Day[20];
-      data["season"] = season;
+      data["a14Day"] = day.missingDay ? "No data" : parseInt(a14Day[13], 10);
+      data["a21Day"] = day.missingDay ? "No data" : parseInt(a21Day[20], 10);
+      data["season"] = day.missingDay ? "No data" : parseInt(season, 10);
+      data["missingDay"] = day.missingDay;
+      data["cumulativeMissingDays"] = day.cumulativeMissingDays;
       this.props.store.app.setCercosporaBeticola(data);
     }
   };
@@ -165,22 +168,39 @@ export default class CercosporaBeticola extends Component {
   render() {
     const {
       ACISData,
-      subject,
       station,
       areRequiredFieldsSet,
       cercosporaBeticola,
       isGraph
     } = this.props.store.app;
 
+    const lastDay = cercosporaBeticola[cercosporaBeticola.length - 1];
+    let totalMissingDays;
+    if (lastDay) {
+      totalMissingDays = lastDay.cumulativeMissingDays;
+    }
+    const missingDayList = cercosporaBeticola.filter(
+      day => day.missingDay === true
+    );
     return (
       <Flex column>
         <Box>
-          <h2>{subject.name} Prediction For {station.name}</h2>
+          <h2>
+            Cercospora leaf spot on table beet Prediction For {station.name}
+          </h2>
         </Box>
+        {totalMissingDays > 0 &&
+          <Box style={{ color: "red" }}>
+            <h4>
+              There are {totalMissingDays} days with no data.
+            </h4>
+            {missingDayList.map(day => (
+              <li key={day.dateTable}>{day.dateTable}</li>
+            ))}
+          </Box>}
 
         <Flex justify="center">
           <Box mt={1} col={12} lg={12} md={12} sm={12}>
-            <h3>Cercospora leaf spot on table beet</h3>
 
             <Table
               bordered
