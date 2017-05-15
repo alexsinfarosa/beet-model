@@ -1,8 +1,8 @@
 {
   "name": "newav2",
   "version": "0.1.0",
-  "homepage": "https://alexsinfarosa.github.io/berry/",
-  "description": "NEWA berry model",
+  "homepage": "https://alexsinfarosa.github.io/berry-model-new/",
+  "description": "NEWA beet model",
   "author": "alexsinfarosa <as898@cornell.edu>",
   "private": true,
   "dependencies": {
