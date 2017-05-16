@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
+import { computed } from "mobx";
 import { format } from "date-fns";
 // import findLast from "lodash/findLast";
-import findLastIndex from "lodash/findLastIndex";
-import addDays from "date-fns/add_days";
+// import findLastIndex from "lodash/findLastIndex";
+// import addDays from "date-fns/add_days";
 
 import { Flex, Box } from "reflexbox";
 
@@ -25,27 +26,36 @@ import { StyledTooltip } from "./styles";
 @inject("store")
 @observer
 export default class Graph extends Component {
-  render() {
-    const { cercosporaBeticola } = this.props.store.app;
-
-    // Potential bug. Chartjs needs a javascript array
-    let a2DayDataAboveZero;
-    const data = cercosporaBeticola.map(e => e);
-    const firstIndexAboveZero = data.findIndex(day => day.a2Day > 0);
-    const lastDayAtZero = data[firstIndexAboveZero - 1];
-
-    const lastIndexAboveZero = findLastIndex(data, day => day.a2Day > 0);
-    const firstDayAtZero = data[lastIndexAboveZero];
-    console.log(firstDayAtZero);
-
-    a2DayDataAboveZero = data.slice(
-      firstIndexAboveZero,
-      lastIndexAboveZero + 1
-    );
-    if (a2DayDataAboveZero.length < 14) {
-      a2DayDataAboveZero = data.slice(firstIndexAboveZero - 1);
+  @computed get data() {
+    return this.props.store.app.cercosporaBeticola.slice();
+  }
+  @computed get firstIndexAboveZero() {
+    return this.data.findIndex(day => day.a2Day > 0);
+  }
+  @computed get lastDayAtZero() {
+    return this.data[this.firstIndexAboveZero - 1];
+  }
+  // @computed get lastIndexAboveZero() {
+  //   return findLastIndex(this.data, day => day.a2Day > 0);
+  // }
+  // @computed get firstDayAtZero() {
+  //   return this.data[this.lastIndexAboveZero];
+  // }
+  @computed get a2DayDataAboveZero() {
+    const data = this.data.slice(this.firstIndexAboveZero);
+    if (data.length < 8) {
+      return this.data.slice(this.firstIndexAboveZero - 6);
     }
-
+    return data;
+  }
+  @computed get lastDayAtZeroDate() {
+    if (this.lastDayAtZero) return this.lastDayAtZero.dateText;
+  }
+  // @computed get firstDayAtZeroDate() {
+  //   if (this.firstDayAtZero)
+  //     return format(addDays(this.firstDayAtZero.date, 1), "MMMM Do");
+  // }
+  render() {
     // Change the aspect ratio when viewed on different devices
     let aspect;
     const w = window.innerWidth;
@@ -76,7 +86,7 @@ export default class Graph extends Component {
       <Flex mt={4} mb={4} column>
         <h2>2-Day Infection Values Graph</h2>
         <br />
-        {firstDayAtZero &&
+        {this.lastDayAtZeroDate &&
           <h4>
             From
             {" "}
@@ -85,17 +95,9 @@ export default class Graph extends Component {
             </span>
             {" "}to{" "}
             <span style={{ color: "black" }}>
-              {lastDayAtZero.dateText}
+              {this.lastDayAtZeroDate}
             </span>
-            {" "} and from {" "}
-            <span style={{ color: "black" }}>
-              {/* {addDays(firstDayAtZero.dateText, 1)} */}
-            </span>
-            {" "} to {" "}
-            <span style={{ color: "black" }}>
-              Dicember 31st,
-            </span>
-            {" "} 2-Day values are zero
+            ,{" "}2-Day values are zero
           </h4>}
         <br />
         <Box
@@ -108,7 +110,7 @@ export default class Graph extends Component {
         >
           <ResponsiveContainer width="100%" aspect={aspect}>
             <ComposedChart
-              data={a2DayDataAboveZero}
+              data={this.a2DayDataAboveZero}
               margin={{ top: 0, right: 20, left: -30, bottom: 5 }}
             >
               <XAxis dataKey="dateGraph" tick={<CustomLabel />} />
@@ -131,7 +133,7 @@ export default class Graph extends Component {
                 ]}
               />
               <Bar dataKey="a2Day">
-                {a2DayDataAboveZero.map((e, index) => (
+                {this.a2DayDataAboveZero.map((e, index) => (
                   <Cell
                     key={`cell-${index}`}
                     cursor="pointer"

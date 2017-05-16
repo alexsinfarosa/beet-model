@@ -1597,7 +1597,7 @@ cosmiconfig@^2.1.0, cosmiconfig@^2.1.1:
     parse-json "^2.2.0"
     require-from-string "^1.1.0"
 
-create-react-class@15.x, create-react-class@^15.5.2, create-react-class@^15.5.x:
+create-react-class@15.x, create-react-class@^15.5.2:
   version "15.5.3"
   resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.5.3.tgz#fb0f7cae79339e9a179e194ef466efa3923820fe"
   dependencies:
@@ -4344,15 +4344,15 @@ oauth-sign@~0.8.1:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/oauth-sign/-/oauth-sign-0.8.2.tgz#46a6ab7f0aead8deae9ec0565780b7d4efeb9d43"
 
-object-assign@4.1.0, object-assign@^4.1.0, object-assign@~4.1.0:
+object-assign@4.1.0, object-assign@4.x, object-assign@^4.0.1, object-assign@^4.1.0, object-assign@~4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.0.tgz#7a3b3d0e98063d43f4c03f2e8ae6cd51a86883a0"
 
-object-assign@4.x, object-assign@^4.0.1, object-assign@^4.1.1:
+object-assign@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
 
-object.omit@^2.0.0, object.omit@^2.0.1:
+object.omit@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/object.omit/-/object.omit-2.0.1.tgz#1a9c744829f39dbb858c76ca3579ae2a54ebd1fa"
   dependencies:
@@ -5310,14 +5310,6 @@ rc@^1.1.7:
     fbjs "^0.8.4"
     object-assign "^4.1.0"
 
-react-cursor-position@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/react-cursor-position/-/react-cursor-position-2.0.1.tgz#7fb46decf0bc0f3d0c33ebb268992fe3e5c1b0a3"
-  dependencies:
-    object-assign "^4.1.1"
-    object.omit "^2.0.1"
-    prop-types "^15.5.8"
-
 react-dev-utils@^0.4.2:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-0.4.2.tgz#ba6fae581fe945a2fc402e9b27c71fda4f62f6a1"
@@ -5368,12 +5360,6 @@ react-leaflet@^1.1.0:
     prop-types "^15.5.0"
     warning "^3.0.0"
 
-react-onclickoutside@^5.11.1:
-  version "5.11.1"
-  resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-5.11.1.tgz#00314e52567cf55faba94cabbacd119619070623"
-  dependencies:
-    create-react-class "^15.5.x"
-
 react-resize-detector@0.3.3:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/react-resize-detector/-/react-resize-detector-0.3.3.tgz#ca07443072324843586666d9443a6356da7c0501"
@@ -5422,6 +5408,12 @@ react-smooth@0.1.20:
     lodash "^4.16.4"
     raf "^3.2.0"
     react-addons-transition-group "^0.14.0 || ^15.0.0"
+
+react-table@^6.0.3:
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/react-table/-/react-table-6.0.3.tgz#665ab9b3447fd732aad92a9c65b5312f18236fef"
+  dependencies:
+    classnames "^2.2.5"
 
 react@^15.5.4:
   version "15.5.4"

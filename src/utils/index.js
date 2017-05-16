@@ -547,6 +547,7 @@ export const getData = async (
     }
     results[i]["dateTable"] = dateTable;
 
+    // IF NO MISSING VALUES IN ARRAY
     // average, min and max temperatures
     let Tmin, Tmax, Tavg;
     if (day.tpFinal.filter(e => e === "M").length === 0) {
@@ -557,7 +558,7 @@ export const getData = async (
       results[i]["Tmin"] = Tmin;
       results[i]["Tmax"] = Tmax;
       results[i]["Tavg"] = Tavg;
-      results[i]["missingDay"] = false;
+      results[i]["missingDay"] = 0;
       results[i]["cumulativeMissingDays"] = cumulativeMissingDays;
 
       // calculate dd (degree day)
@@ -589,11 +590,11 @@ export const getData = async (
       results[i]["Tmin"] = "No data";
       results[i]["Tmax"] = "No data";
       results[i]["Tavg"] = "No data";
-      results[i]["missingDay"] = true;
+      results[i]["missingDay"] = 1;
       results[i]["cumulativeMissingDays"] = cumulativeMissingDays;
       results[i]["rhAboveValues"] = "No data";
       results[i]["hrsRH"] = "No data";
-      results[i]["dicv"] = 0.001;
+      results[i]["dicv"] = 0.0001;
     }
   }
   // results.map(e => console.log(e));

@@ -3,17 +3,15 @@ import { inject, observer } from "mobx-react";
 import takeRight from "lodash/takeRight";
 import { autorun } from "mobx";
 
-import "styles/table.styl";
 import { Flex, Box } from "reflexbox";
-
-import Table from "antd/lib/table";
-import "antd/lib/table/style/css";
 
 // components
 import Graph from "./Graph";
 
-// styled-components
-import { RiskLevel } from "./styles";
+import ReactTable from "react-table";
+import "react-table/react-table.css";
+
+import "styles/table.styl";
 
 // To display the 'forecast text' and style the cell
 const forecastText = date => {
@@ -26,81 +24,6 @@ const forecastText = date => {
     </div>
   );
 };
-
-const noData = data => {
-  if (data === "No Data") {
-    return <span style={{ fontSize: ".6rem", color: "red" }}>No Data</span>;
-  }
-  return data;
-};
-
-const riskLevel = (text, record, i) => {
-  if (record.missingDay) return "No data";
-  return (
-    <div>
-      <span style={{ color: record.colorBar }}>{text}</span>
-      <RiskLevel style={{ background: record.colorBar }}>
-        {record.a2DayIR}
-      </RiskLevel>
-    </div>
-  );
-};
-
-// columns for the model
-const columns = [
-  {
-    title: "Date",
-    dataIndex: "dateTable",
-    key: "dateTable",
-    fixed: "left",
-    width: 70,
-    className: "table",
-    render: date => forecastText(date)
-  },
-  {
-    title: "Infection Values",
-    children: [
-      {
-        title: "Daily",
-        className: "table",
-        dataIndex: "dicv",
-        key: "dicv"
-      },
-      {
-        title: "2-Day",
-        className: "table",
-        dataIndex: "a2Day",
-        key: "a2Day",
-        render: (text, record, i) => riskLevel(text, record, i)
-      }
-    ]
-  },
-  {
-    title: "Accumulation Infection Values",
-    children: [
-      {
-        title: "14-Day",
-        className: "table",
-        dataIndex: "a14Day",
-        key: "a14Day",
-        render: data => noData(data)
-      },
-      {
-        title: "21-Day",
-        className: "table",
-        dataIndex: "a21Day",
-        key: "a21Day",
-        render: data => noData(data)
-      },
-      {
-        title: `Season`,
-        className: "table",
-        dataIndex: "season",
-        key: "season"
-      }
-    ]
-  }
-];
 
 @inject("store")
 @observer
@@ -116,9 +39,11 @@ export default class CercosporaBeticola extends Component {
     const data = {};
     let a2Day = 0;
     let season = 0;
+    let description = [];
+
     for (const [i, day] of ACISData.entries()) {
       // determine a2Day
-      if (i > 0) {
+      if (i >= 1) {
         a2Day = day.dicv + ACISData[i - 1].dicv;
       }
 
@@ -141,26 +66,53 @@ export default class CercosporaBeticola extends Component {
       }
 
       // 14-Day Accumulation Infection Values
-      const a14Day = ACISData.slice(i - 14, i).map(e => e.dicv);
+      let a14Day = new Array(14).fill(0);
+      let a14DayMissingDays = 0;
+      if (i >= 14) {
+        a14Day = ACISData.slice(i - 14, i).map(e => e.dicv);
+        a14DayMissingDays = ACISData.slice(i - 14, i).map(e => e.missingDay);
+        a14DayMissingDays = a14DayMissingDays.reduce(
+          (acc, val) => acc + val,
+          0
+        );
+      }
       // 21-Day Accumulation Infection Values
-      const a21Day = ACISData.slice(i - 21, i).map(e => e.dicv);
+      let a21Day = new Array(21).fill(0);
+      let a21DayMissingDays = 0;
+      if (i >= 21) {
+        a21Day = ACISData.slice(i - 21, i).map(e => e.dicv);
+        a21DayMissingDays = ACISData.slice(i - 21, i).map(e => e.missingDay);
+        a21DayMissingDays = a21DayMissingDays.reduce(
+          (acc, val) => acc + val,
+          0
+        );
+      }
+
+      // Description
+      if (day.missingDay === 1) {
+        description.push(day.dateText);
+      }
+
       // Season Total Infection Values
       season += day.dicv;
-
       // building the object
       data["dateTable"] = day.dateTable;
       data["dateGraph"] = day.dateGraph;
       data["dateText"] = day.dateText;
-      data["dicv"] = day.missingDay ? "No data" : parseInt(day.dicv, 10);
+      data["dicv"] = parseInt(day.dicv, 10);
       data["a2Day"] = parseInt(a2Day, 10);
       data["a2DayIR"] = a2DayIR;
       data["color"] = color;
       data["colorBar"] = colorBar;
-      data["a14Day"] = day.missingDay ? "No data" : parseInt(a14Day[13], 10);
-      data["a21Day"] = day.missingDay ? "No data" : parseInt(a21Day[20], 10);
-      data["season"] = day.missingDay ? "No data" : parseInt(season, 10);
+      data["a14Day"] = parseInt(a14Day[13], 10);
+      data["a14DayMissingDays"] = a14DayMissingDays;
+      data["a21Day"] = parseInt(a21Day[20], 10);
+      data["a21DayMissingDays"] = a21DayMissingDays;
+      data["season"] = parseInt(season, 10);
       data["missingDay"] = day.missingDay;
       data["cumulativeMissingDays"] = day.cumulativeMissingDays;
+      data["missingDates"] =
+        "loresdfsdfasdfasdfasdfasdfasdfasdfasdfasdfasdfadsfasdfad";
       this.props.store.app.setCercosporaBeticola(data);
     }
   };
@@ -175,14 +127,49 @@ export default class CercosporaBeticola extends Component {
     } = this.props.store.app;
     const { mobile } = this.props;
 
-    const lastDay = cercosporaBeticola[cercosporaBeticola.length - 1];
-    let totalMissingDays;
-    if (lastDay) {
-      totalMissingDays = lastDay.cumulativeMissingDays;
-    }
-    const missingDayList = cercosporaBeticola.filter(
-      day => day.missingDay === true
-    );
+    const columns = [
+      {
+        Header: "Date",
+        columns: [
+          {
+            Header: "",
+            accessor: "dateTable", // String-based value accessors!
+            Cell: d => forecastText(d.value)
+          }
+        ]
+      },
+      {
+        Header: "Infection Values",
+        columns: [
+          {
+            Header: "Daily",
+            accessor: "dicv"
+          },
+          {
+            Header: "2-Day",
+            accessor: "a2Day"
+          }
+        ]
+      },
+      {
+        Header: "Accumulation Infection Values",
+        columns: [
+          {
+            Header: "14-Day",
+            accessor: "a14Day"
+          },
+          {
+            Header: "21-Day",
+            accessor: "a21Day"
+          },
+          {
+            Header: `Season`,
+            accessor: "season"
+          }
+        ]
+      }
+    ];
+
     return (
       <Flex column>
         <Box>
@@ -190,29 +177,19 @@ export default class CercosporaBeticola extends Component {
             Cercospora leaf spot on table beet Prediction For {station.name}
           </h2>
         </Box>
-        {totalMissingDays > 0 &&
-          <Box style={{ color: "red" }}>
-            <h4>
-              There are {totalMissingDays} days with no data.
-            </h4>
-            {missingDayList.map(day => (
-              <li key={day.dateTable}>{day.dateTable}</li>
-            ))}
-          </Box>}
 
         <Flex justify="center">
           <Box mt={1} col={12} lg={12} md={12} sm={12}>
-
-            <Table
-              bordered
-              size={mobile ? "small" : "middle"}
-              columns={columns}
-              rowKey={record => record.dateTable}
+            <ReactTable
+              style={{ textAlign: "center" }}
+              className="-striped -highlight"
               loading={ACISData.length === 0}
-              pagination={false}
-              dataSource={
+              showPagination={false}
+              defaultPageSize={8}
+              data={
                 areRequiredFieldsSet ? takeRight(cercosporaBeticola, 8) : null
               }
+              columns={columns}
             />
           </Box>
         </Flex>

@@ -22,7 +22,7 @@ export default class AppStore {
   @observable isLoading = false;
   @action setIsLoading = d => (this.isLoading = d);
 
-  @observable isMap = true;
+  @observable isMap = false;
   @action setIsMap = d => (this.isMap = d);
 
   @observable isGraph = false;
