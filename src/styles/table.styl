@@ -13,6 +13,7 @@
   }
 }
 
+
 table > .ant-table-thead > tr > th{
   text-align: center;
   // background-color: #FEF0E8;
@@ -41,10 +42,24 @@ table > .ant-table-thead > tr > th{
 
 .ReactTable {
   font-family: Roboto;
+  display: flex;
+  max-width 100%;
+  overflow-x: hidden;
+
+  @media (max-width: 992px) {
+    font-size: .7rem;
+  }
+  @media (max-width: 768px) {
+    font-size: .6rem;
+  }
+  @media (max-width: 400px) {
+    font-size: .5rem;
+  }
 }
 
 .ReactTable .rt-tr {
-  height: 4rem;
+  height: 3rem;
+  font-size .7rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -54,5 +69,9 @@ table > .ant-table-thead > tr > th{
 }
 
 .ReactTable .rt-thead  {
+
+}
+
+.ReactTable .rt-resizer {
 
 }

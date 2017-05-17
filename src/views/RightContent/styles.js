@@ -7,8 +7,8 @@ export const Header = styled.div`
   flex: 0 0 auto;
   display: flex;
   justify-content: space-between;
-  background: #F0F8FD;
-  color: black;
+  background: #A05C7B;
+  color: white;
   padding: 16px;
   font-size: 1.3em;
   height: 60px;

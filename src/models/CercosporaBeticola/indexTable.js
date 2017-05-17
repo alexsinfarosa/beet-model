@@ -3,14 +3,15 @@ import { inject, observer } from "mobx-react";
 import takeRight from "lodash/takeRight";
 import { autorun } from "mobx";
 
-import "styles/table.styl";
 import { Flex, Box } from "reflexbox";
-
-import Table from "antd/lib/table";
-import "antd/lib/table/style/css";
 
 // components
 import Graph from "./Graph";
+
+import ReactTable from "react-table";
+import "react-table/react-table.css";
+
+import "styles/table.styl";
 
 // styled-components
 import { RiskLevel } from "./styles";
@@ -27,30 +28,30 @@ const forecastText = date => {
   );
 };
 
-const dicv = (text, record, i) => {
-  if (record.missingDay) return "No data";
+const dicv = record => {
+  if (record.original.missingDay) return "No data";
   return (
     <div>
-      {text}
+      {record.value}
     </div>
   );
 };
 
-const a2Day = (text, record, i) => {
-  if (record.missingDay) return "No data";
+const a2Day = record => {
+  if (record.original.missingDay) return "No data";
   return (
     <div>
-      <span style={{ color: record.colorBar }}>{text}</span>
-      <RiskLevel style={{ background: record.colorBar }}>
-        {record.a2DayIR}
+      <span style={{ color: record.original.colorBar }}>{record.value}</span>
+      <RiskLevel style={{ background: record.original.colorBar }}>
+        {record.original.a2DayIR}
       </RiskLevel>
     </div>
   );
 };
 
-const a14Day = (text, record, i) => {
-  if (record.missingDay) return "No data";
-  if (record.a14DayMissingDays > 0) {
+const a14Day = record => {
+  if (record.original.missingDay) return "No data";
+  if (record.original.a14DayMissingDays > 0) {
     return (
       <div
         style={{
@@ -59,19 +60,19 @@ const a14Day = (text, record, i) => {
           justifyContent: "center"
         }}
       >
-        <span style={{ marginRight: "5px" }}>{text}</span>
+        <span style={{ marginRight: "5px" }}>{record.value}</span>
         <span style={{ color: "red", fontSize: ".6rem" }}>
-          {" "}(+{record.a14DayMissingDays})
+          {" "}(+{record.original.a14DayMissingDays})
         </span>
       </div>
     );
   }
-  return text;
+  return record.value;
 };
 
-const a21Day = (text, record, i) => {
-  if (record.missingDay) return "No data";
-  if (record.a21DayMissingDays > 0) {
+const a21Day = record => {
+  if (record.original.missingDay) return "No data";
+  if (record.original.a21DayMissingDays > 0) {
     return (
       <div
         style={{
@@ -80,19 +81,19 @@ const a21Day = (text, record, i) => {
           justifyContent: "center"
         }}
       >
-        <span style={{ marginRight: "5px" }}>{text}</span>
+        <span style={{ marginRight: "5px" }}>{record.value}</span>
         <span style={{ color: "red", fontSize: ".6rem" }}>
-          {" "}(+{record.a21DayMissingDays})
+          {" "}(+{record.original.a21DayMissingDays})
         </span>
       </div>
     );
   }
-  return text;
+  return record.value;
 };
 
-const season = (text, record, i) => {
-  if (record.missingDay) return "No data";
-  if (record.cumulativeMissingDays > 0) {
+const season = record => {
+  if (record.original.missingDay) return "No data";
+  if (record.original.cumulativeMissingDays > 0) {
     return (
       <div
         style={{
@@ -101,81 +102,49 @@ const season = (text, record, i) => {
           justifyContent: "center"
         }}
       >
-        <span style={{ marginRight: "5px" }}>{text}</span>
+        <span style={{ marginRight: "5px" }}>{record.value}</span>
         <span style={{ color: "red", fontSize: ".6rem" }}>
-          {" "}(+{record.cumulativeMissingDays})
+          {" "}(+{record.original.cumulativeMissingDays})
         </span>
       </div>
     );
   }
-  return text;
+  return record.value;
 };
 
 const description = record => {
-  return (
-    <div>
-      {record.missingDates}
-    </div>
-  );
-};
+  if (record.original.missingDates.length > 0) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "inherit"
+          }}
+        >
+          <h4>
+            No data available for the following dates:
+            <div style={{ color: "red", fontSize: ".6rem" }}>
+              {record.original.cumulativeMissingDays} days total
+            </div>
+          </h4>
+        </div>
+        <div style={{ flex: 1 }}>
+          {record.original.missingDates.map((date, i) => (
+            <div key={i} style={{ textAlign: "left" }}>
+              - {date}
+            </div>
+          ))}
 
-//columns for the model
-const columns = [
-  {
-    title: "Date",
-    dataIndex: "dateTable",
-    key: "dateTable",
-    fixed: "left",
-    width: 70,
-    className: "table",
-    render: date => forecastText(date)
-  },
-  {
-    title: "Infection Values",
-    children: [
-      {
-        title: "Daily",
-        className: "table",
-        dataIndex: "dicv",
-        key: "dicv",
-        render: (text, record, i) => dicv(text, record, i)
-      },
-      {
-        title: "2-Day",
-        className: "table",
-        dataIndex: "a2Day",
-        key: "a2Day",
-        render: (text, record, i) => a2Day(text, record, i)
-      }
-    ]
-  },
-  {
-    title: "Accumulation Infection Values",
-    children: [
-      {
-        title: "14-Day",
-        className: "table",
-        dataIndex: "a14Day",
-        key: "a14Day",
-        render: (text, record, i) => a14Day(text, record, i)
-      },
-      {
-        title: "21-Day",
-        className: "table",
-        dataIndex: "a21Day",
-        key: "a21Day",
-        render: (text, record, i) => a21Day(text, record, i)
-      },
-      {
-        title: `Season`,
-        className: "table",
-        dataIndex: "season",
-        key: "season",
-        render: (text, record, i) => season(text, record, i)
-      }
-    ]
+        </div>
+      </div>
+    );
   }
-];
+  return null;
+};
 
 @inject("store")
 @observer
@@ -184,6 +153,14 @@ export default class CercosporaBeticola extends Component {
     super(props);
     autorun(() => this.createDataModel());
   }
+  state = {
+    sorted: [],
+    page: 0,
+    pageSize: 10,
+    expanded: {},
+    resized: [],
+    filtered: []
+  };
 
   createDataModel = () => {
     this.props.store.app.resetCercospora();
@@ -278,14 +255,53 @@ export default class CercosporaBeticola extends Component {
     } = this.props.store.app;
     const { mobile } = this.props;
 
-    const lastDay = cercosporaBeticola[cercosporaBeticola.length - 1];
-    let totalMissingDays;
-    if (lastDay) {
-      totalMissingDays = lastDay.cumulativeMissingDays;
-    }
-    const missingDayList = cercosporaBeticola.filter(
-      day => day.missingDay === 1
-    );
+    const columns = [
+      {
+        Header: "",
+        columns: [
+          {
+            Header: "Date",
+            accessor: "dateTable", // String-based value accessors!
+            Cell: d => forecastText(d.value)
+          }
+        ]
+      },
+      {
+        Header: "Infection Values",
+        columns: [
+          {
+            Header: "Daily",
+            accessor: "dicv",
+            Cell: d => dicv(d)
+          },
+          {
+            Header: "2-Day",
+            accessor: "a2Day",
+            Cell: d => a2Day(d)
+          }
+        ]
+      },
+      {
+        Header: "Accumulation Infection Values",
+        columns: [
+          {
+            Header: "14-Day",
+            accessor: "a14Day",
+            Cell: d => a14Day(d)
+          },
+          {
+            Header: "21-Day",
+            accessor: "a21Day",
+            Cell: d => a21Day(d)
+          },
+          {
+            Header: `Season`,
+            accessor: "season",
+            Cell: d => season(d)
+          }
+        ]
+      }
+    ];
 
     return (
       <Flex column>
@@ -294,30 +310,23 @@ export default class CercosporaBeticola extends Component {
             Cercospora leaf spot on table beet Prediction For {station.name}
           </h2>
         </Box>
-        {totalMissingDays > 0 &&
-          <Box style={{ color: "red" }}>
-            <h4>
-              There are {totalMissingDays} days with no data.
-            </h4>
-            {missingDayList.map(day => (
-              <li key={day.dateTable}>{day.dateTable}</li>
-            ))}
-          </Box>}
 
         <Flex justify="center">
           <Box mt={1} col={12} lg={12} md={12} sm={12}>
-
-            <Table
-              bordered
-              size={mobile ? "small" : "middle"}
-              columns={columns}
-              rowKey={record => record.dateTable}
+            <ReactTable
+              resizable={true}
+              style={{ textAlign: "center" }}
+              className="-striped -highlight"
               loading={ACISData.length === 0}
-              pagination={false}
-              dataSource={
+              showPagination={false}
+              defaultPageSize={8}
+              data={
                 areRequiredFieldsSet ? takeRight(cercosporaBeticola, 8) : null
               }
-              expandedRowRender={record => description(record)}
+              columns={columns}
+              SubComponent={d => description(d)}
+              // onExpandedChange={expanded => console.log({ expanded })}
+              onResizedChange={resized => console.log({ resized })}
             />
           </Box>
         </Flex>
