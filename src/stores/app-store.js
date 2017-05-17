@@ -22,7 +22,7 @@ export default class AppStore {
   @observable isLoading = false;
   @action setIsLoading = d => (this.isLoading = d);
 
-  @observable isMap = false;
+  @observable isMap = true;
   @action setIsMap = d => (this.isMap = d);
 
   @observable isGraph = false;
@@ -64,6 +64,10 @@ export default class AppStore {
     this.state = states.filter(state => state.name === stateName)[0];
     localStorage.setItem("state", JSON.stringify(this.state));
   };
+  @computed get bbox() {
+    const box = this.state.bbox
+    return [[box[1], box[0]], [box[3], box[2]]]
+  }
 
   // Station--------------------------------------------------------------------
   @observable stations = [];
@@ -107,6 +111,9 @@ export default class AppStore {
   @observable cercosporaBeticola = [];
   @action resetCercospora = () => (this.cercosporaBeticola = []);
   @action setCercosporaBeticola = d => this.cercosporaBeticola.push(d);
+  @computed get displayPlusButton() {
+    return this.ACISData.filter(e => e.missingDay).length > 0
+  }
 
   @observable barColor;
   @action setBarColor = d => (this.barColor = d);

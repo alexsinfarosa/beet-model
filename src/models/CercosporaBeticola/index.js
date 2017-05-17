@@ -27,6 +27,7 @@ const forecastText = date => {
   );
 };
 
+
 const dicv = (text, record, i) => {
   if (record.missingDay) return "No data";
   return (
@@ -55,7 +56,7 @@ const a14Day = (text, record, i) => {
       <div
         style={{
           display: "flex",
-          alignItems: "baseline",
+          alignItems: "center",
           justifyContent: "center"
         }}
       >
@@ -76,7 +77,7 @@ const a21Day = (text, record, i) => {
       <div
         style={{
           display: "flex",
-          alignItems: "baseline",
+          alignItems: "center",
           justifyContent: "center"
         }}
       >
@@ -97,12 +98,12 @@ const season = (text, record, i) => {
       <div
         style={{
           display: "flex",
-          alignItems: "baseline",
+          alignItems: "center",
           justifyContent: "center"
         }}
       >
         <span style={{ marginRight: "5px" }}>{text}</span>
-        <span style={{ color: "red", fontSize: ".6rem" }}>
+        <span style={{ color: "red",fontSize: ".6rem" }}>
           {" "}(+{record.cumulativeMissingDays})
         </span>
       </div>
@@ -112,11 +113,30 @@ const season = (text, record, i) => {
 };
 
 const description = record => {
-  return (
-    <div>
-      {record.missingDates}
-    </div>
-  );
+  if (record.missingDates.length > 0) {
+    return (
+      <Flex style={{ fontSize: ".6rem" }} column>
+        <Box col={12} lg={6} md={6} sm={12}>
+          <Box col={12} lg={12} md={12} sm={12}>
+            {record.missingDates.length > 1 ? 
+              <div>No data available for the following {record.cumulativeMissingDays} dates: </div>
+            :
+              <div>No data available for the following date:</div>
+            }
+          </Box>
+        </Box>
+        <br />
+        <Box col={12} lg={6} md={6} sm={12}>
+          {record.missingDates.map((date, i) => (
+            <div key={i}>
+              - {date}
+            </div>
+          ))}
+        </Box>
+      </Flex>
+    );
+  }
+  return null;
 };
 
 //columns for the model
@@ -125,8 +145,6 @@ const columns = [
     title: "Date",
     dataIndex: "dateTable",
     key: "dateTable",
-    fixed: "left",
-    width: 70,
     className: "table",
     render: date => forecastText(date)
   },
@@ -274,51 +292,47 @@ export default class CercosporaBeticola extends Component {
       station,
       areRequiredFieldsSet,
       cercosporaBeticola,
-      isGraph
+      isGraph,
+      displayPlusButton
     } = this.props.store.app;
     const { mobile } = this.props;
-
-    const lastDay = cercosporaBeticola[cercosporaBeticola.length - 1];
-    let totalMissingDays;
-    if (lastDay) {
-      totalMissingDays = lastDay.cumulativeMissingDays;
-    }
-    const missingDayList = cercosporaBeticola.filter(
-      day => day.missingDay === 1
-    );
 
     return (
       <Flex column>
         <Box>
           <h2>
-            Cercospora leaf spot on table beet Prediction For {station.name}
+            Cercospora leaf spot on table beet prediction for <em style={{color: '#A05C7B'}}>{station.name}</em>
           </h2>
         </Box>
-        {totalMissingDays > 0 &&
-          <Box style={{ color: "red" }}>
-            <h4>
-              There are {totalMissingDays} days with no data.
-            </h4>
-            {missingDayList.map(day => (
-              <li key={day.dateTable}>{day.dateTable}</li>
-            ))}
-          </Box>}
 
         <Flex justify="center">
           <Box mt={1} col={12} lg={12} md={12} sm={12}>
-
-            <Table
-              bordered
-              size={mobile ? "small" : "middle"}
-              columns={columns}
-              rowKey={record => record.dateTable}
-              loading={ACISData.length === 0}
-              pagination={false}
-              dataSource={
-                areRequiredFieldsSet ? takeRight(cercosporaBeticola, 8) : null
-              }
-              expandedRowRender={record => description(record)}
-            />
+            {displayPlusButton
+              ? <Table
+                  size={mobile ? "small" : "middle"}
+                  columns={columns}
+                  rowKey={record => record.dateTable}
+                  loading={ACISData.length === 0}
+                  pagination={false}
+                  dataSource={
+                    areRequiredFieldsSet
+                      ? takeRight(cercosporaBeticola, 8)
+                      : null
+                  }
+                  expandedRowRender={record => description(record)}
+                />
+              : <Table
+                  size={mobile ? "small" : "middle"}
+                  columns={columns}
+                  rowKey={record => record.dateTable}
+                  loading={ACISData.length === 0}
+                  pagination={false}
+                  dataSource={
+                    areRequiredFieldsSet
+                      ? takeRight(cercosporaBeticola, 8)
+                      : null
+                  }
+                />}
           </Box>
         </Flex>
         {isGraph && <Graph />}
