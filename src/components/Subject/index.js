@@ -42,7 +42,7 @@ class Subject extends Component {
             );
           })}
         </Select> */}
-        <h2>Cercospora Beticola</h2>
+        <h2>Cercospora beticola</h2>
       </div>
     );
   }

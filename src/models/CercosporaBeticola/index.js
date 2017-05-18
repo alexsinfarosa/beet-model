@@ -13,103 +13,153 @@ import "antd/lib/table/style/css";
 import Graph from "./Graph";
 
 // styled-components
-import { RiskLevel } from "./styles";
+import { RiskLevel, Value, Info } from "./styles";
 
 // To display the 'forecast text' and style the cell
 const forecastText = date => {
   return (
-    <div>
-      <div>{date.split("-")[0]}</div>
-      <div style={{ color: "red" }}>
+    <Flex justify="center" align="center" column>
+      <Value>
+        {date.split("-")[0]}
+      </Value>
+
+      <Info>
         {date.split("-")[1]}
-      </div>
-    </div>
+      </Info>
+    </Flex>
   );
 };
 
-
 const dicv = (text, record, i) => {
-  if (record.missingDay) return "No data";
   return (
-    <div>
-      {text}
-    </div>
+    <Flex justify="center" align="center">
+      <Value>
+        {record.missingDay ? "No data" : text}
+      </Value>
+    </Flex>
   );
 };
 
 const a2Day = (text, record, i) => {
-  if (record.missingDay) return "No data";
+  if (record.missingDay === 1) {
+    return (
+      <Flex justify="center" align="center">
+        <Value>
+          No data
+        </Value>
+      </Flex>
+    );
+  }
   return (
-    <div>
-      <span style={{ color: record.colorBar }}>{text}</span>
-      <RiskLevel style={{ background: record.colorBar }}>
+    <Flex justify="center" align="center">
+      <Value col={3} lg={4} md={4} sm={3} style={{ color: record.colorBar }}>
+        {text}
+      </Value>
+      <RiskLevel col={9} lg={8} md={8} sm={9} style={{ color: record.colorBar }}>
         {record.a2DayIR}
       </RiskLevel>
-    </div>
+    </Flex>
   );
 };
 
 const a14Day = (text, record, i) => {
-  if (record.missingDay) return "No data";
-  if (record.a14DayMissingDays > 0) {
+  if (record.missingDay === 1) {
     return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        <span style={{ marginRight: "5px" }}>{text}</span>
-        <span style={{ color: "red", fontSize: ".6rem" }}>
-          {" "}(+{record.a14DayMissingDays})
-        </span>
-      </div>
+      <Flex justify="center" align="center">
+        <Value>
+          No data
+        </Value>
+      </Flex>
     );
   }
-  return text;
+
+  if (record.missingDay === 0) {
+    if (record.a14DayMissingDays > 0) {
+      return (
+        <Flex justify="center" align="center">
+          <Value auto>
+            {text}
+          </Value>
+          <Info>
+            (+{record.a14DayMissingDays})
+          </Info>
+        </Flex>
+      );
+    }
+    return (
+      <Flex justify="center" align="center">
+        <Value>
+          {text}
+        </Value>
+      </Flex>
+    );
+  }
 };
 
 const a21Day = (text, record, i) => {
-  if (record.missingDay) return "No data";
-  if (record.a21DayMissingDays > 0) {
+  if (record.missingDay === 1) {
     return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        <span style={{ marginRight: "5px" }}>{text}</span>
-        <span style={{ color: "red", fontSize: ".6rem" }}>
-          {" "}(+{record.a21DayMissingDays})
-        </span>
-      </div>
+      <Flex justify="center" align="center">
+        <Value>
+          No data
+        </Value>
+      </Flex>
     );
   }
-  return text;
+
+  if (record.missingDay === 0) {
+    if (record.a21DayMissingDays > 0) {
+      return (
+        <Flex justify="center" align="center">
+          <Value auto>
+            {text}
+          </Value>
+          <Info>
+            (+{record.a21DayMissingDays})
+          </Info>
+        </Flex>
+      );
+    }
+    return (
+      <Flex justify="center" align="center">
+        <Value>
+          {text}
+        </Value>
+      </Flex>
+    );
+  }
 };
 
 const season = (text, record, i) => {
-  if (record.missingDay) return "No data";
-  if (record.cumulativeMissingDays > 0) {
+  if (record.missingDay === 1)
     return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        <span style={{ marginRight: "5px" }}>{text}</span>
-        <span style={{ color: "red",fontSize: ".6rem" }}>
-          {" "}(+{record.cumulativeMissingDays})
-        </span>
-      </div>
+      <Flex justify="center" align="center">
+        <Value>
+          No data
+        </Value>
+      </Flex>
+    );
+  if (record.missingDay === 0) {
+    if (record.cumulativeMissingDays > 0) {
+      return (
+        <Flex justify="center" align="center">
+          <Value auto>
+            {text}
+          </Value>
+          <Info>
+            (+{record.cumulativeMissingDays})
+          </Info>
+        </Flex>
+      );
+    }
+    return (
+      <Flex justify="center" align="center">
+        <Value>
+          {text}
+        </Value>
+      </Flex>
     );
   }
-  return text;
 };
 
 const description = record => {
@@ -118,11 +168,16 @@ const description = record => {
       <Flex style={{ fontSize: ".6rem" }} column>
         <Box col={12} lg={6} md={6} sm={12}>
           <Box col={12} lg={12} md={12} sm={12}>
-            {record.missingDates.length > 1 ? 
-              <div>No data available for the following {record.cumulativeMissingDays} dates: </div>
-            :
-              <div>No data available for the following date:</div>
-            }
+            {record.missingDates.length > 1
+              ? <div>
+                  No data available for the following
+                  {" "}
+                  {record.cumulativeMissingDays}
+                  {" "}
+                  dates:
+                  {" "}
+                </div>
+              : <div>No data available for the following date:</div>}
           </Box>
         </Box>
         <br />
@@ -222,41 +277,50 @@ export default class CercosporaBeticola extends Component {
       let color = "";
       let colorBar = "";
       if (a2Day >= 0 && a2Day <= 3) {
-        a2DayIR = "Low";
+        a2DayIR = "LOW";
         color = "low";
-        colorBar = "#81C784";
+        colorBar = "#007932";
       } else if (a2Day >= 4 && a2Day <= 6) {
-        a2DayIR = "Moderate";
+        a2DayIR = "MODERATE";
         color = "moderate";
-        colorBar = "#FCCE00";
+        colorBar = "#E89005";
       } else {
-        a2DayIR = "High";
+        a2DayIR = "HIGH";
         color = "high";
-        colorBar = "#f44336";
+        colorBar = "#F00314";
       }
 
       // 14-Day Accumulation Infection Values
-      let a14Day = new Array(14).fill(0);
+      let a14DayArr = 0
+      let a14Day = 0;
+      let a14DayMissingDaysArr = 0;
       let a14DayMissingDays = 0;
       if (i >= 14) {
-        a14Day = ACISData.slice(i - 14, i).map(e => e.dicv);
-        a14DayMissingDays = ACISData.slice(i - 14, i).map(e => e.missingDay);
-        a14DayMissingDays = a14DayMissingDays.reduce(
+        a14DayArr = ACISData.slice(i - 14, i+1).map(e => e.dicv);
+        a14Day = a14DayArr.reduce((acc, val) => acc + val, 0)
+        a14DayMissingDaysArr = ACISData.slice(i - 14, i+1).map(e => e.missingDay);
+        a14DayMissingDays = a14DayMissingDaysArr.reduce(
           (acc, val) => acc + val,
           0
         );
       }
+      // console.log(day.dateTable, a14DayArr, a14Day)
+      
       // 21-Day Accumulation Infection Values
-      let a21Day = new Array(21).fill(0);
+      let a21DayArr = 0;
+      let a21Day = 0;
+      let a21DayMissingDaysArr = 0;
       let a21DayMissingDays = 0;
       if (i >= 21) {
-        a21Day = ACISData.slice(i - 21, i).map(e => e.dicv);
-        a21DayMissingDays = ACISData.slice(i - 21, i).map(e => e.missingDay);
-        a21DayMissingDays = a21DayMissingDays.reduce(
+        a21DayArr = ACISData.slice(i - 21, i+1).map(e => e.dicv);
+        a21Day = a21DayArr.reduce((acc, val) => acc + val, 0)
+        a21DayMissingDaysArr = ACISData.slice(i - 21, i+1).map(e => e.missingDay);
+        a21DayMissingDays = a21DayMissingDaysArr.reduce(
           (acc, val) => acc + val,
           0
         );
       }
+
 
       // Description
       if (day.missingDay === 1) {
@@ -265,6 +329,7 @@ export default class CercosporaBeticola extends Component {
 
       // Season Total Infection Values
       season += day.dicv;
+
       // building the object
       data["dateTable"] = day.dateTable;
       data["dateGraph"] = day.dateGraph;
@@ -274,9 +339,9 @@ export default class CercosporaBeticola extends Component {
       data["a2DayIR"] = a2DayIR;
       data["color"] = color;
       data["colorBar"] = colorBar;
-      data["a14Day"] = parseInt(a14Day[13], 10);
+      data["a14Day"] = parseInt(a14Day, 10);
       data["a14DayMissingDays"] = a14DayMissingDays;
-      data["a21Day"] = parseInt(a21Day[20], 10);
+      data["a21Day"] = parseInt(a21Day, 10);
       data["a21DayMissingDays"] = a21DayMissingDays;
       data["season"] = parseInt(season, 10);
       data["missingDay"] = day.missingDay;
@@ -296,12 +361,14 @@ export default class CercosporaBeticola extends Component {
       displayPlusButton
     } = this.props.store.app;
     const { mobile } = this.props;
-
+    
     return (
       <Flex column>
         <Box>
           <h2>
-            Cercospora leaf spot on table beet prediction for <em style={{color: '#A05C7B'}}>{station.name}</em>
+            Cercospora leaf spot on table beet prediction for
+            {" "}
+            <em style={{ color: "#A05C7B" }}>{station.name}</em>
           </h2>
         </Box>
 

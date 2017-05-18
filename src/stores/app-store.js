@@ -61,13 +61,9 @@ export default class AppStore {
   @action setState = stateName => {
     // localStorage.removeItem("station");
     this.station = {};
-    this.state = states.filter(state => state.name === stateName)[0];
+    this.state = states.find(state => state.name === stateName);
     localStorage.setItem("state", JSON.stringify(this.state));
   };
-  @computed get bbox() {
-    const box = this.state.bbox
-    return [[box[1], box[0]], [box[3], box[2]]]
-  }
 
   // Station--------------------------------------------------------------------
   @observable stations = [];

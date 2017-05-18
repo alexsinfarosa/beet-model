@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import { TileLayer, Marker, Rectangle } from "react-leaflet";
+import { TileLayer, Marker, Rectangle, Popup } from "react-leaflet";
 import L from "leaflet";
-
+import { toJS } from "mobx";
 
 // states
 import { states } from "config/states";
@@ -52,12 +52,28 @@ export default class TheMap extends Component {
         // postalCode={station.state}
         icon={myIcon(station.icon)}
         title={station.name}
-
         onClick={this.onClickSetStation}
       />
     ));
-    
-    console.log(state.bbox.slice())
+
+    // const MyPopupMarker = ({ name, lat,  lon }) => (
+    //   <Marker position={[lat, lon]}>
+    //     <Popup>
+    //       <span>{name}</span>
+    //     </Popup>
+    //   </Marker>
+    // );
+
+    // const MyMarkersList = ({ markers }) => {
+    //   const items = markers.map(station => (
+    //     <MyPopupMarker key={`${station.id} ${station.network}`} {...station}/>
+    //   ));
+    //   return <div style={{ display: "none" }}>{items}</div>;
+    // };
+
+    // <MyMarkersList markers={stationsWithMatchedIcons} />
+
+    // <Rectangle bounds={toJS(state.bbox)} />
 
     return (
       <Flex justify="center">
@@ -69,16 +85,12 @@ export default class TheMap extends Component {
             center={
               Object.keys(state).length === 0
                 ? [42.9543, -75.5262]
-                : [state.lat, state.lon]          
+                : [state.lat, state.lon]
             }
-            bounds={[[40.49622, -79.76338], [45.01597, -71.85616]]}
-            boundsOptions={{padding: [50, 50]}}
+            // bounds={toJS(state.bbox)}
+            // boundsOptions={{ padding: [10, 10], background: 'red' }}
             zoom={Object.keys(state).length === 0 ? 6 : state.zoom}
           >
-          <Rectangle bounds={[[40.49622, -79.76338], [45.01597, -71.85616]]}>
-            
-
-          </Rectangle>
             <TileLayer
               url={`${protocol}//server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}`}
             />
