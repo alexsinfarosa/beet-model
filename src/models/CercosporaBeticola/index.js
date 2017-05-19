@@ -51,12 +51,12 @@ const a2Day = (text, record, i) => {
     );
   }
   return (
-    <Flex justify="center" align="center">
-      <Value col={3} lg={4} md={4} sm={3} style={{ color: record.colorBar }}>
+    <Flex justify='center' align="center">
+      <Value  style={{ color: record.colorBar }}>
         {text}
       </Value>
-      <RiskLevel col={9} lg={8} md={8} sm={9} style={{ color: record.colorBar }}>
-        {record.a2DayIR}
+      <RiskLevel style={{ color: record.colorBar, marginLeft: '10px' }}>
+        ( {record.a2DayIR} )
       </RiskLevel>
     </Flex>
   );
@@ -214,7 +214,7 @@ const columns = [
         render: (text, record, i) => dicv(text, record, i)
       },
       {
-        title: "2-Day",
+        title: "2-Day (Risk)",
         className: "table",
         dataIndex: "a2Day",
         key: "a2Day",
@@ -265,10 +265,14 @@ export default class CercosporaBeticola extends Component {
     let a2Day = 0;
     let season = 0;
     let description = [];
+    let a14Day = 0;
+    let a21Day = 0;
 
     for (const [i, day] of ACISData.entries()) {
       // determine a2Day
-      if (i >= 1) {
+      if (i === 0) {
+        a2Day = day.dicv
+      } else {
         a2Day = day.dicv + ACISData[i - 1].dicv;
       }
 
@@ -292,10 +296,12 @@ export default class CercosporaBeticola extends Component {
 
       // 14-Day Accumulation Infection Values
       let a14DayArr = 0
-      let a14Day = 0;
+      // let a14Day = 0;
       let a14DayMissingDaysArr = 0;
       let a14DayMissingDays = 0;
-      if (i >= 14) {
+      if (i < 14) {
+        a14Day += day.dicv
+      } else {
         a14DayArr = ACISData.slice(i - 14, i+1).map(e => e.dicv);
         a14Day = a14DayArr.reduce((acc, val) => acc + val, 0)
         a14DayMissingDaysArr = ACISData.slice(i - 14, i+1).map(e => e.missingDay);
@@ -308,10 +314,12 @@ export default class CercosporaBeticola extends Component {
       
       // 21-Day Accumulation Infection Values
       let a21DayArr = 0;
-      let a21Day = 0;
+      // let a21Day = 0;
       let a21DayMissingDaysArr = 0;
       let a21DayMissingDays = 0;
-      if (i >= 21) {
+      if (i < 21) {
+        a21Day += day.dicv
+      } else {
         a21DayArr = ACISData.slice(i - 21, i+1).map(e => e.dicv);
         a21Day = a21DayArr.reduce((acc, val) => acc + val, 0)
         a21DayMissingDaysArr = ACISData.slice(i - 21, i+1).map(e => e.missingDay);
@@ -383,7 +391,7 @@ export default class CercosporaBeticola extends Component {
                   pagination={false}
                   dataSource={
                     areRequiredFieldsSet
-                      ? takeRight(cercosporaBeticola, 8)
+                      ? takeRight(cercosporaBeticola, 53)
                       : null
                   }
                   expandedRowRender={record => description(record)}
@@ -396,7 +404,7 @@ export default class CercosporaBeticola extends Component {
                   pagination={false}
                   dataSource={
                     areRequiredFieldsSet
-                      ? takeRight(cercosporaBeticola, 8)
+                      ? takeRight(cercosporaBeticola, 53)
                       : null
                   }
                 />}

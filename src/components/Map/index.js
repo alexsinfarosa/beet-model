@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import { TileLayer, Marker, Rectangle, Popup } from "react-leaflet";
+import { TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
-import { toJS } from "mobx";
+// import { toJS } from "mobx";
 
 // states
 import { states } from "config/states";

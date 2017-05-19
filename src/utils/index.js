@@ -300,7 +300,7 @@ export const anthracnoseModel = data => {
   return (1 / (1 + Math.exp(-i))).toFixed(2);
 };
 
-// This function will shift data from (0, 23) to (12, 24)
+// This function will shift data from (0, 23) to (13, 12)
 export const noonToNoon = data => {
   let results = [];
 
@@ -387,6 +387,21 @@ export const linspaceMissingValues = data => {
   }
 };
 
+import nd from "./nd.json";
+// nd.map(e => console.log(e))
+const ndTp = nd.map(e => e.tp);
+let tp = [];
+while (ndTp.length > 24) {
+  tp.push(ndTp.splice(12, 24));
+}
+const ndRh = nd.map(e => e.rh);
+let rh = [];
+while (ndRh.length > 24) {
+  rh.push(ndRh.splice(12, 24));
+}
+// console.log(rh)
+// const ndRh = nd.map(e => e.rh)
+
 // Returns true if finds more than 3 missing values in array
 // const above3Ms = data => {
 //   return data.filter(e => e === "M").length > 3 ? false : true;
@@ -445,10 +460,14 @@ export const getData = async (
 
     // replacing missing values with sister station
     for (const [i, day] of results.entries()) {
-      results[i]["tpFinal"] = replaceMissingValues(day.tp, day.tpSis);
-      results[i]["rhFinal"] = replaceMissingValues(day.rh, day.rhSis);
-      results[i]["lwFinal"] = replaceMissingValues(day.lw, day.lwSis);
-      results[i]["ptFinal"] = replaceMissingValues(day.pt, day.ptSis);
+      // results[i]["tpFinal"] = replaceMissingValues(day.tp, day.tpSis);
+      // results[i]["rhFinal"] = replaceMissingValues(day.rh, day.rhSis);
+
+      results[i]["tpFinal"] = tp[i];
+      results[i]["rhFinal"] = rh[i];
+
+      // results[i]["lwFinal"] = replaceMissingValues(day.lw, day.lwSis);
+      // results[i]["ptFinal"] = replaceMissingValues(day.pt, day.ptSis);
     }
     // console.log("We are in past year");
     // results.map(e => console.log(e.date, e.tp, e.tpSis, e.tpFinal));
@@ -511,21 +530,23 @@ export const getData = async (
 
     // replacing tpDiff values with forecast station temperatures (tpf)
     for (const [i, day] of results.entries()) {
-      results[i]["tpFinal"] = replaceMissingValues(
-        day.tpCurrentAndSiter,
-        day.tpForecast
-      );
-      // Forcast data needs to have relative humidity array adjusted
-      results[i]["rhFinal"] = RHAdjustment(
-        replaceMissingValues(day.rhCurrentAndSiter, day.rhForecast)
-      );
+      // results[i]["tpFinal"] = replaceMissingValues(
+      //   day.tpCurrentAndSiter,
+      //   day.tpForecast
+      // );
+      // // Forcast data needs to have relative humidity array adjusted
+      // results[i]["rhFinal"] = RHAdjustment(
+      //   replaceMissingValues(day.rhCurrentAndSiter, day.rhForecast)
+      // );
+      results[i]["tpFinal"] = tp[i];
+      results[i]["rhFinal"] = rh[i];
       results[i]["ptFinal"] = replaceMissingValues(
         day.ptCurrentAndSiter,
         day.ptForecast
       );
     }
   }
-
+  results.slice(0, 5).map(e => console.log(e))
   // Add to the results objects params that might be needed
   const base = 50;
   let cdd = 0;
@@ -551,9 +572,18 @@ export const getData = async (
     // average, min and max temperatures
     let Tmin, Tmax, Tavg;
     if (day.tpFinal.filter(e => e === "M").length === 0) {
-      Tmin = Math.min(...day.tpFinal);
-      Tmax = Math.max(...day.tpFinal);
-      Tavg = average(day.tpFinal);
+
+      let tempsAboveRH = []
+      day.rhFinal.forEach((rh,i) => {
+        if(rh >= 85 ) {
+          tempsAboveRH.push(day.tpFinal[i]) 
+        }
+      });
+      Tmin = Math.min(...tempsAboveRH);
+      Tmax = Math.max(...tempsAboveRH);
+      // Tavg = average(tempsAboveRH);
+      Tavg = Math.round((Tmax + Tmin)/2)
+
       cumulativeMissingDays += 0;
       results[i]["Tmin"] = Tmin;
       results[i]["Tmax"] = Tmax;
@@ -571,7 +601,7 @@ export const getData = async (
 
       if (day.rhFinal.filter(e => e === "M").length === 0) {
         // returns relative humidity above or equal to 90% (RH >= 90)
-        const rhAboveValues = aboveEqualToValue(day.rhFinal, 90);
+        const rhAboveValues = aboveEqualToValue(day.rhFinal, 85);
         results[i]["rhAboveValues"] = rhAboveValues;
 
         // Number of hours where relative humidity is equal to or above 90%
@@ -583,7 +613,8 @@ export const getData = async (
         if (Tavg >= 59 && Tavg <= 94 && hrsRH > 0) {
           dicv = table[hrsRH.toString()][Tavg.toString()];
         }
-        results[i]["dicv"] = parseInt(dicv, 10);
+        results[i]["dicv"] = dicv;
+        // console.log(day.date, Tavg, hrsRH, Tavg, dicv)
       }
     } else {
       cumulativeMissingDays += 1;
