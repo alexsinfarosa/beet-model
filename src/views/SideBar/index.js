@@ -36,6 +36,19 @@ class SideBar extends Component {
     const { subject } = this.props.store.app;
     return (
       <SideBarContent>
+        <Box mb={2} style={{ textAlign: "center", letterSpacing: '1px' }}>
+          <h3>
+            <a
+              style={{ color: "red" }}
+              href="http://www.cornell.edu/"
+              target="_blank"
+            >
+              Cornell University
+            </a>
+          </h3>
+        </Box>
+        <hr/>
+        <br/>
         <Subject size={this.props.size} />
         <State size={this.props.size} />
         <Station size={this.props.size} />

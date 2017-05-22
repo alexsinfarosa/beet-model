@@ -460,14 +460,14 @@ export const getData = async (
 
     // replacing missing values with sister station
     for (const [i, day] of results.entries()) {
-      // results[i]["tpFinal"] = replaceMissingValues(day.tp, day.tpSis);
-      // results[i]["rhFinal"] = replaceMissingValues(day.rh, day.rhSis);
+      results[i]["tpFinal"] = replaceMissingValues(day.tp, day.tpSis);
+      results[i]["rhFinal"] = replaceMissingValues(day.rh, day.rhSis);
 
-      results[i]["tpFinal"] = tp[i];
-      results[i]["rhFinal"] = rh[i];
+      // results[i]["tpFinal"] = tp[i];
+      // results[i]["rhFinal"] = rh[i];
 
-      // results[i]["lwFinal"] = replaceMissingValues(day.lw, day.lwSis);
-      // results[i]["ptFinal"] = replaceMissingValues(day.pt, day.ptSis);
+      results[i]["lwFinal"] = replaceMissingValues(day.lw, day.lwSis);
+      results[i]["ptFinal"] = replaceMissingValues(day.pt, day.ptSis);
     }
     // console.log("We are in past year");
     // results.map(e => console.log(e.date, e.tp, e.tpSis, e.tpFinal));
@@ -530,23 +530,23 @@ export const getData = async (
 
     // replacing tpDiff values with forecast station temperatures (tpf)
     for (const [i, day] of results.entries()) {
-      // results[i]["tpFinal"] = replaceMissingValues(
-      //   day.tpCurrentAndSiter,
-      //   day.tpForecast
-      // );
-      // // Forcast data needs to have relative humidity array adjusted
-      // results[i]["rhFinal"] = RHAdjustment(
-      //   replaceMissingValues(day.rhCurrentAndSiter, day.rhForecast)
-      // );
-      results[i]["tpFinal"] = tp[i];
-      results[i]["rhFinal"] = rh[i];
+      results[i]["tpFinal"] = replaceMissingValues(
+        day.tpCurrentAndSiter,
+        day.tpForecast
+      );
+      // Forcast data needs to have relative humidity array adjusted
+      results[i]["rhFinal"] = RHAdjustment(
+        replaceMissingValues(day.rhCurrentAndSiter, day.rhForecast)
+      );
+      // results[i]["tpFinal"] = tp[i];
+      // results[i]["rhFinal"] = rh[i];
       results[i]["ptFinal"] = replaceMissingValues(
         day.ptCurrentAndSiter,
         day.ptForecast
       );
     }
   }
-  results.slice(0, 5).map(e => console.log(e))
+  // results.slice(0, 5).map(e => console.log(e))
   // Add to the results objects params that might be needed
   const base = 50;
   let cdd = 0;
@@ -601,7 +601,7 @@ export const getData = async (
 
       if (day.rhFinal.filter(e => e === "M").length === 0) {
         // returns relative humidity above or equal to 90% (RH >= 90)
-        const rhAboveValues = aboveEqualToValue(day.rhFinal, 85);
+        const rhAboveValues = aboveEqualToValue(day.rhFinal, 90);
         results[i]["rhAboveValues"] = rhAboveValues;
 
         // Number of hours where relative humidity is equal to or above 90%

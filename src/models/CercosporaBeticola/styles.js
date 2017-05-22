@@ -33,6 +33,7 @@ export const Value = styled(Box)`
 
 `
 export const Info = styled(Box)`
+  margin-left: 3px;
   color: red;
   font-size: .7rem;
 

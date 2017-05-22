@@ -31,8 +31,14 @@ class RightContent extends Component {
             </Header>
           : <Header>
               <div>Beet Model</div>
-              <div>NEWA</div>
+              <div>
+                <div style={{textAlign: 'right'}}>NEWA</div>
+                <div style={{ fontSize: ".7rem", letterSpacing: '1px' }}>
+                  Network for Environment and Weather Applications
+                </div>
+              </div>
             </Header>}
+
 
         <MainContent>
           {isMap && <Map />}

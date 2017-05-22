@@ -22,7 +22,7 @@ export default class AppStore {
   @observable isLoading = false;
   @action setIsLoading = d => (this.isLoading = d);
 
-  @observable isMap = false;
+  @observable isMap = true;
   @action setIsMap = d => (this.isMap = d);
 
   @observable isGraph = false;
@@ -94,7 +94,7 @@ export default class AppStore {
     localStorage.setItem("endDate", JSON.stringify(this.endDate));
   };
   @computed get startDate() {
-    return `${format(this.endDate, "YYYY")}-06-15`;
+    return `${format(this.endDate, "YYYY")}-01-01`;
   }
   @computed get startDateYear() {
     return format(this.endDate, "YYYY");

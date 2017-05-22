@@ -51,12 +51,20 @@ const a2Day = (text, record, i) => {
     );
   }
   return (
-    <Flex justify='center' align="center">
-      <Value  style={{ color: record.colorBar }}>
+    <Flex justify="center" align="center">
+      <Value style={{ color: record.colorBar }}>
         {text}
       </Value>
-      <RiskLevel style={{ color: record.colorBar, marginLeft: '10px' }}>
-        ( {record.a2DayIR} )
+      <RiskLevel
+        style={{
+          background: record.colorBar,
+          marginLeft: "10px",
+          color: "white",
+          padding: "2px 4px",
+          borderRadius: "5px",
+        }}
+      >
+        {record.a2DayIR}
       </RiskLevel>
     </Flex>
   );
@@ -214,7 +222,7 @@ const columns = [
         render: (text, record, i) => dicv(text, record, i)
       },
       {
-        title: "2-Day (Risk)",
+        title: "2-Day/Risk",
         className: "table",
         dataIndex: "a2Day",
         key: "a2Day",
@@ -271,7 +279,7 @@ export default class CercosporaBeticola extends Component {
     for (const [i, day] of ACISData.entries()) {
       // determine a2Day
       if (i === 0) {
-        a2Day = day.dicv
+        a2Day = day.dicv;
       } else {
         a2Day = day.dicv + ACISData[i - 1].dicv;
       }
@@ -283,52 +291,55 @@ export default class CercosporaBeticola extends Component {
       if (a2Day >= 0 && a2Day <= 3) {
         a2DayIR = "LOW";
         color = "low";
-        colorBar = "#007932";
+        colorBar = "#81C784";
       } else if (a2Day >= 4 && a2Day <= 6) {
         a2DayIR = "MODERATE";
         color = "moderate";
-        colorBar = "#E89005";
+        colorBar = "#FCCE00";
       } else {
         a2DayIR = "HIGH";
         color = "high";
-        colorBar = "#F00314";
+        colorBar = "#F44336";
       }
 
       // 14-Day Accumulation Infection Values
-      let a14DayArr = 0
+      let a14DayArr = 0;
       // let a14Day = 0;
       let a14DayMissingDaysArr = 0;
       let a14DayMissingDays = 0;
       if (i < 14) {
-        a14Day += day.dicv
+        a14Day += day.dicv;
       } else {
-        a14DayArr = ACISData.slice(i - 14, i+1).map(e => e.dicv);
-        a14Day = a14DayArr.reduce((acc, val) => acc + val, 0)
-        a14DayMissingDaysArr = ACISData.slice(i - 14, i+1).map(e => e.missingDay);
+        a14DayArr = ACISData.slice(i - 14, i + 1).map(e => e.dicv);
+        a14Day = a14DayArr.reduce((acc, val) => acc + val, 0);
+        a14DayMissingDaysArr = ACISData.slice(i - 14, i + 1).map(
+          e => e.missingDay
+        );
         a14DayMissingDays = a14DayMissingDaysArr.reduce(
           (acc, val) => acc + val,
           0
         );
       }
       // console.log(day.dateTable, a14DayArr, a14Day)
-      
+
       // 21-Day Accumulation Infection Values
       let a21DayArr = 0;
       // let a21Day = 0;
       let a21DayMissingDaysArr = 0;
       let a21DayMissingDays = 0;
       if (i < 21) {
-        a21Day += day.dicv
+        a21Day += day.dicv;
       } else {
-        a21DayArr = ACISData.slice(i - 21, i+1).map(e => e.dicv);
-        a21Day = a21DayArr.reduce((acc, val) => acc + val, 0)
-        a21DayMissingDaysArr = ACISData.slice(i - 21, i+1).map(e => e.missingDay);
+        a21DayArr = ACISData.slice(i - 21, i + 1).map(e => e.dicv);
+        a21Day = a21DayArr.reduce((acc, val) => acc + val, 0);
+        a21DayMissingDaysArr = ACISData.slice(i - 21, i + 1).map(
+          e => e.missingDay
+        );
         a21DayMissingDays = a21DayMissingDaysArr.reduce(
           (acc, val) => acc + val,
           0
         );
       }
-
 
       // Description
       if (day.missingDay === 1) {
@@ -369,15 +380,23 @@ export default class CercosporaBeticola extends Component {
       displayPlusButton
     } = this.props.store.app;
     const { mobile } = this.props;
-    
+
     return (
       <Flex column>
         <Box>
+        {!mobile ?
           <h2>
             Cercospora leaf spot on table beet prediction for
             {" "}
             <em style={{ color: "#A05C7B" }}>{station.name}</em>
           </h2>
+          :
+          <h3>
+            Cercospora leaf spot on table beet prediction for
+            {" "}
+            <em style={{ color: "#A05C7B" }}>{station.name}</em>
+          </h3>
+        }
         </Box>
 
         <Flex justify="center">
@@ -391,7 +410,7 @@ export default class CercosporaBeticola extends Component {
                   pagination={false}
                   dataSource={
                     areRequiredFieldsSet
-                      ? takeRight(cercosporaBeticola, 53)
+                      ? takeRight(cercosporaBeticola, 8)
                       : null
                   }
                   expandedRowRender={record => description(record)}
@@ -404,7 +423,7 @@ export default class CercosporaBeticola extends Component {
                   pagination={false}
                   dataSource={
                     areRequiredFieldsSet
-                      ? takeRight(cercosporaBeticola, 53)
+                      ? takeRight(cercosporaBeticola, 8)
                       : null
                   }
                 />}
