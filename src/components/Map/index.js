@@ -43,6 +43,7 @@ export default class TheMap extends Component {
   render() {
     // const position = [this.state.lat, this.state.lng];
     const { stationsWithMatchedIcons, state, protocol } = this.props.store.app;
+    // const {mobile} = this.props;
 
     const MarkerList = stationsWithMatchedIcons.map(station => (
       <Marker
@@ -72,8 +73,8 @@ export default class TheMap extends Component {
     // };
 
     // <MyMarkersList markers={stationsWithMatchedIcons} />
-
     // <Rectangle bounds={toJS(state.bbox)} />
+
 
     return (
       <Flex justify="center">
@@ -88,7 +89,7 @@ export default class TheMap extends Component {
                 : [state.lat, state.lon]
             }
             // bounds={toJS(state.bbox)}
-            // boundsOptions={{ padding: [10, 10], background: 'red' }}
+            // boundsOptions={{ padding: [5, 5]}}
             zoom={Object.keys(state).length === 0 ? 6 : state.zoom}
           >
             <TileLayer

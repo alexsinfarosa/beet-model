@@ -41,7 +41,7 @@ class RightContent extends Component {
 
 
         <MainContent>
-          {isMap && <Map />}
+          {isMap && <Map {...this.props} />}
           {areRequiredFieldsSet && <CercosporaBeticola {...this.props} />}
         </MainContent>
       </div>

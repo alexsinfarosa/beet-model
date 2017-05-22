@@ -2,8 +2,11 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
 // antd
-import Switch from "antd/lib/switch";
-import "antd/lib/switch/style/css";
+// import Switch from "antd/lib/switch";
+// import "antd/lib/switch/style/css";
+
+import Button from "antd/lib/button";
+import "antd/lib/button/style/css";
 
 // components
 import Subject from "components/Subject";
@@ -20,26 +23,26 @@ import { SideBarContent } from "./styles";
 @observer
 class SideBar extends Component {
   // toggle Map component
-  toggleMap = checked => {
+  toggleMap = () => {
     // console.log(`switch to ${checked}`);
-    this.props.store.app.setIsMap(checked);
+    this.props.store.app.setIsMap();
     this.props.store.app.setIsSidebarOpen(false);
   };
 
-  toggleGraph = checked => {
+  toggleGraph = () => {
     // console.log(`switch to ${checked}`);
-    this.props.store.app.setIsGraph(checked);
+    this.props.store.app.setIsGraph();
     this.props.store.app.setIsSidebarOpen(false);
   };
 
   render() {
-    const { subject } = this.props.store.app;
+    const { subject, isGraph, isMap } = this.props.store.app;
     return (
       <SideBarContent>
-        <Box mb={2} style={{ textAlign: "center", letterSpacing: '1px' }}>
+        <Box mb={2} style={{ textAlign: "center", letterSpacing: "1px" }}>
           <h3>
             <a
-              style={{ color: "red" }}
+              style={{ color: "#B31B1B" }}
               href="http://www.cornell.edu/"
               target="_blank"
             >
@@ -47,30 +50,24 @@ class SideBar extends Component {
             </a>
           </h3>
         </Box>
-        <hr/>
-        <br/>
+        <hr />
+        <br />
         <Subject size={this.props.size} />
         <State size={this.props.size} />
         <Station size={this.props.size} />
         <DatePicker size={this.props.size} />
-        <Box mb={2}>
-          <label>Display Map </label>
-          <Switch
-            checkedChildren="ON"
-            unCheckedChildren="0FF"
-            defaultChecked={true}
-            onChange={this.toggleMap}
-          />
+
+        <Box mb={2} mt={2}>
+          <Button size='large' icon="environment-o" onClick={this.toggleMap}>
+          {isMap ? 'Hide Map' : 'Display Map'}
+          </Button>
         </Box>
+        
         {subject.graph &&
-          <Box mb={2}>
-            <label>Display Graph </label>
-            <Switch
-              checkedChildren="ON"
-              unCheckedChildren="0FF"
-              defaultChecked={false}
-              onChange={this.toggleGraph}
-            />
+          <Box>
+            <Button size='large' icon="bar-chart" onClick={this.toggleGraph}>
+             {isGraph ? 'Hide Graph' : 'Display Graph'}
+            </Button>
           </Box>}
       </SideBarContent>
     );
