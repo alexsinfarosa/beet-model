@@ -183,10 +183,6 @@ export const average = data => {
   // handling the case for T and W
   if (data.length === 0) return 0;
 
-  // handling the case when data is null or has 24 Missing values
-  const missingValues = data.filter(e => e === "M").length;
-  if (data.length === 0 || missingValues === 24) return "Insufficient Data";
-
   //  calculating average
   let results = data.map(e => parseFloat(e));
   return Math.round(results.reduce((acc, val) => acc + val, 0) / data.length);
@@ -348,45 +344,7 @@ export const noonToNoon = data => {
   return results.slice(0, -1);
 };
 
-// From numeric.js
-const linspace = (a, b, n) => {
-  if (typeof n === "undefined") n = Math.max(Math.round(b - a) + 1, 1);
-  if (n < 2) {
-    return n === 1 ? [a] : [];
-  }
-  var i, ret = Array(n);
-  n--;
-  for (i = n; i >= 0; i--) {
-    ret[i] = (i * b + (n - i) * a) / n;
-  }
-  return ret;
-};
-
-// Returns an array with all missing values replace by the linspace function
-export const linspaceMissingValues = data => {
-  const checkIfAllMValues = data.filter(e => e === "M").length;
-  if (checkIfAllMValues === 24) {
-    return "No data available for this day";
-  } else if (checkIfAllMValues < 12) {
-    let results = data;
-    while (results.findIndex(e => e === "M") !== -1) {
-      const firstIndex = data.findIndex(e => e === "M");
-      const valuesToReplace = data.slice(firstIndex).findIndex(e => e !== "M");
-      const lastIndex = firstIndex + valuesToReplace - 1;
-      const startRange = firstIndex - 1;
-      const endRange = lastIndex + 1;
-      const range = linspace(startRange, endRange, valuesToReplace);
-
-      for (let i = 0; i < valuesToReplace; i++) {
-        results.splice(firstIndex + i, 1, range[i].toString());
-      }
-    }
-    return results;
-  } else {
-    return data;
-  }
-};
-
+// Testing ----------------------------------------------------------------------------
 import nd from "./nd.json";
 // nd.map(e => console.log(e))
 const ndTp = nd.map(e => e.tp);
@@ -399,14 +357,7 @@ let rh = [];
 while (ndRh.length > 24) {
   rh.push(ndRh.splice(12, 24));
 }
-// console.log(rh)
-// const ndRh = nd.map(e => e.rh)
-
-// Returns true if finds more than 3 missing values in array
-// const above3Ms = data => {
-//   return data.filter(e => e === "M").length > 3 ? false : true;
-// };
-
+// ------------------------------------------------------------------------------------
 // Returns the data array (MAIN FUNCTION) ---------------------------------------------------
 export const getData = async (
   protocol,
@@ -568,21 +519,20 @@ export const getData = async (
     }
     results[i]["dateTable"] = dateTable;
 
-    // IF NO MISSING VALUES IN ARRAY
-    // average, min and max temperatures
-    let Tmin, Tmax, Tavg;
-    if (day.tpFinal.filter(e => e === "M").length === 0) {
+    // Return true if arrays do not contain missing values
+    const isRhClean = day.rhFinal.filter(e => e === "M").length === 0;
+    const isTpClean = day.tpFinal.filter(e => e === "M").length === 0;
 
-      let tempsAboveRH = []
-      day.rhFinal.forEach((rh,i) => {
-        if(rh >= 85 ) {
-          tempsAboveRH.push(day.tpFinal[i]) 
+    if (isTpClean && isRhClean) {
+      let Tmin, Tmax, Tavg, tempsAboveRH = [];
+      day.rhFinal.forEach((rh, i) => {
+        if (rh >= 90) {
+          tempsAboveRH.push(day.tpFinal[i]);
         }
       });
-      Tmin = Math.min(...tempsAboveRH);
-      Tmax = Math.max(...tempsAboveRH);
-      // Tavg = average(tempsAboveRH);
-      Tavg = Math.round((Tmax + Tmin)/2)
+      Tmin = tempsAboveRH.length > 0 ? Math.min(...tempsAboveRH) : null;
+      Tmax = tempsAboveRH.length > 0 ? Math.max(...tempsAboveRH) : null;
+      Tavg = average(tempsAboveRH);
 
       cumulativeMissingDays += 0;
       results[i]["Tmin"] = Tmin;
@@ -599,23 +549,22 @@ export const getData = async (
       cdd += dd;
       results[i]["cdd"] = cdd;
 
-      if (day.rhFinal.filter(e => e === "M").length === 0) {
-        // returns relative humidity above or equal to 90% (RH >= 90)
-        const rhAboveValues = aboveEqualToValue(day.rhFinal, 90);
-        results[i]["rhAboveValues"] = rhAboveValues;
+      // returns relative humidity above or equal to 90% (RH >= 90)
+      const rhAboveValues = aboveEqualToValue(day.rhFinal, 90);
+      results[i]["rhAboveValues"] = rhAboveValues;
 
-        // Number of hours where relative humidity is equal to or above 90%
-        const hrsRH = rhAboveValues.filter(e => e !== false).length;
-        results[i]["hrsRH"] = hrsRH;
+      // Number of hours where relative humidity is equal to or above 90%
+      const hrsRH = rhAboveValues.filter(e => e !== false).length;
+      results[i]["hrsRH"] = hrsRH;
 
-        // calculate dicv..
-        let dicv = 0;
-        if (Tavg >= 59 && Tavg <= 94 && hrsRH > 0) {
-          dicv = table[hrsRH.toString()][Tavg.toString()];
-        }
-        results[i]["dicv"] = dicv;
-        // console.log(day.date, Tavg, hrsRH, Tavg, dicv)
+      // calculate dicv..
+      let dicv = 0;
+      if (Tavg >= 59 && Tavg <= 94 && hrsRH > 0) {
+        dicv = table[hrsRH.toString()][Tavg.toString()];
       }
+      console.log(day.date, Tavg);
+      results[i]["dicv"] = dicv;
+      // console.log(day.date, Tavg, hrsRH, Tavg, dicv)
     } else {
       cumulativeMissingDays += 1;
       results[i]["Tmin"] = "No data";

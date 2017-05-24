@@ -22,7 +22,7 @@ export default class AppStore {
   @observable isLoading = false;
   @action setIsLoading = d => (this.isLoading = d);
 
-  @observable isMap = true;
+  @observable isMap = false;
   @action setIsMap = d => (this.isMap = !this.isMap);
 
   @observable isGraph = false;
@@ -109,7 +109,7 @@ export default class AppStore {
   @action resetCercospora = () => (this.cercosporaBeticola = []);
   @action setCercosporaBeticola = d => this.cercosporaBeticola.push(d);
   @computed get displayPlusButton() {
-    return this.ACISData.filter(e => e.missingDay).length > 0
+    return this.ACISData.filter(e => e.missingDay).length > 0;
   }
 
   @observable barColor;

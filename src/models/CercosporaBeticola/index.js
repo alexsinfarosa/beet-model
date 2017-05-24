@@ -61,7 +61,7 @@ const a2Day = (text, record, i) => {
           marginLeft: "10px",
           color: "white",
           padding: "2px 4px",
-          borderRadius: "5px",
+          borderRadius: "5px"
         }}
       >
         {record.a2DayIR}
@@ -289,15 +289,15 @@ export default class CercosporaBeticola extends Component {
       let color = "";
       let colorBar = "";
       if (a2Day >= 0 && a2Day <= 3) {
-        a2DayIR = "LOW";
+        a2DayIR = "Low";
         color = "low";
         colorBar = "#81C784";
       } else if (a2Day >= 4 && a2Day <= 6) {
-        a2DayIR = "MODERATE";
+        a2DayIR = "Moderate";
         color = "moderate";
         colorBar = "#FCCE00";
       } else {
-        a2DayIR = "HIGH";
+        a2DayIR = "High";
         color = "high";
         colorBar = "#F44336";
       }
@@ -384,19 +384,17 @@ export default class CercosporaBeticola extends Component {
     return (
       <Flex column>
         <Box>
-        {!mobile ?
-          <h2>
-            Cercospora leaf spot on table beet prediction for
-            {" "}
-            <em style={{ color: "#A05C7B" }}>{station.name}</em>
-          </h2>
-          :
-          <h3>
-            Cercospora leaf spot on table beet prediction for
-            {" "}
-            <em style={{ color: "#A05C7B" }}>{station.name}</em>
-          </h3>
-        }
+          {!mobile
+            ? <h2>
+                Cercospora leaf spot on table beet prediction for
+                {" "}
+                <em style={{ color: "#A05C7B" }}>{station.name}</em>
+              </h2>
+            : <h3>
+                Cercospora leaf spot on table beet prediction for
+                {" "}
+                <em style={{ color: "#A05C7B" }}>{station.name}</em>
+              </h3>}
         </Box>
 
         <Flex justify="center">
