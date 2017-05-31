@@ -350,6 +350,7 @@ export default class CercosporaBeticola extends Component {
       season += day.dicv;
 
       // building the object
+      data["date"] = day.date;
       data["dateTable"] = day.dateTable;
       data["dateGraph"] = day.dateGraph;
       data["dateText"] = day.dateText;

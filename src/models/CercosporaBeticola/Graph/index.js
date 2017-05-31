@@ -2,9 +2,7 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import { computed } from "mobx";
 import { format } from "date-fns";
-// import findLast from "lodash/findLast";
-// import findLastIndex from "lodash/findLastIndex";
-// import addDays from "date-fns/add_days";
+import isAfter from "date-fns/is_after";
 
 import { Flex, Box } from "reflexbox";
 
@@ -29,18 +27,15 @@ export default class Graph extends Component {
   @computed get data() {
     return this.props.store.app.cercosporaBeticola.slice();
   }
+
   @computed get firstIndexAboveZero() {
     return this.data.findIndex(day => day.a2Day > 0);
   }
+
   @computed get lastDayAtZero() {
     return this.data[this.firstIndexAboveZero - 1];
   }
-  // @computed get lastIndexAboveZero() {
-  //   return findLastIndex(this.data, day => day.a2Day > 0);
-  // }
-  // @computed get firstDayAtZero() {
-  //   return this.data[this.lastIndexAboveZero];
-  // }
+
   @computed get a2DayDataAboveZero() {
     const data = this.data.slice(this.firstIndexAboveZero);
     if (data.length < 8) {
@@ -48,14 +43,13 @@ export default class Graph extends Component {
     }
     return data;
   }
+
   @computed get lastDayAtZeroDate() {
     if (this.lastDayAtZero) return this.lastDayAtZero.dateText;
   }
-  // @computed get firstDayAtZeroDate() {
-  //   if (this.firstDayAtZero)
-  //     return format(addDays(this.firstDayAtZero.date, 1), "MMMM Do");
-  // }
+
   render() {
+    const { currentYear } = this.props.store.app;
     // Change the aspect ratio when viewed on different devices
     let aspect;
     const w = window.innerWidth;
@@ -87,6 +81,7 @@ export default class Graph extends Component {
         <h2>2-Day Infection Values Graph</h2>
         <br />
         {this.lastDayAtZeroDate &&
+          isAfter(this.lastDayAtZero.date, `${currentYear}-01-10`) &&
           <h4>
             From
             {" "}
@@ -99,6 +94,7 @@ export default class Graph extends Component {
             </span>
             ,{" "}2-Day values are zero
           </h4>}
+
         <br />
         <Box
           mt={3}
