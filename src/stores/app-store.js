@@ -1,6 +1,6 @@
 import { observable, action, computed } from "mobx";
 import { matchIconsToStations } from "utils";
-import { states } from "config/states";
+import { states } from "utils/states";
 import format from "date-fns/format";
 
 export default class AppStore {
@@ -22,7 +22,7 @@ export default class AppStore {
   @observable isLoading = false;
   @action setIsLoading = d => (this.isLoading = d);
 
-  @observable isMap = false;
+  @observable isMap = true;
   @action setIsMap = d => (this.isMap = !this.isMap);
 
   @observable isGraph = false;

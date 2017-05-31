@@ -3,7 +3,7 @@ import addDays from "date-fns/add_days";
 import isAfter from "date-fns/is_after";
 
 // table for the beet model
-import { table } from "config/table";
+import { table } from "./table";
 
 // api
 import {
@@ -345,18 +345,18 @@ export const noonToNoon = data => {
 };
 
 // Testing ----------------------------------------------------------------------------
-import nd from "./nd.json";
+// import nd from "./fakeDataBeetModel.json";
 // nd.map(e => console.log(e))
-const ndTp = nd.map(e => e.tp);
-let tp = [];
-while (ndTp.length > 24) {
-  tp.push(ndTp.splice(12, 24));
-}
-const ndRh = nd.map(e => e.rh);
-let rh = [];
-while (ndRh.length > 24) {
-  rh.push(ndRh.splice(12, 24));
-}
+// const ndTp = nd.map(e => e.tp);
+// let tp = [];
+// while (ndTp.length > 24) {
+//   tp.push(ndTp.splice(12, 24));
+// }
+// const ndRh = nd.map(e => e.rh);
+// let rh = [];
+// while (ndRh.length > 24) {
+//   rh.push(ndRh.splice(12, 24));
+// }
 // ------------------------------------------------------------------------------------
 // Returns the data array (MAIN FUNCTION) ---------------------------------------------------
 export const getData = async (
@@ -532,7 +532,8 @@ export const getData = async (
       });
       Tmin = tempsAboveRH.length > 0 ? Math.min(...tempsAboveRH) : null;
       Tmax = tempsAboveRH.length > 0 ? Math.max(...tempsAboveRH) : null;
-      Tavg = average(tempsAboveRH);
+      // Tavg = average(tempsAboveRH);
+      Tavg = Math.round((Tmin + Tmax) / 2);
 
       cumulativeMissingDays += 0;
       results[i]["Tmin"] = Tmin;
@@ -562,7 +563,7 @@ export const getData = async (
       if (Tavg >= 59 && Tavg <= 94 && hrsRH > 0) {
         dicv = table[hrsRH.toString()][Tavg.toString()];
       }
-      console.log(day.date, Tavg);
+      // console.log(day.date, Tavg);
       results[i]["dicv"] = dicv;
       // console.log(day.date, Tavg, hrsRH, Tavg, dicv)
     } else {

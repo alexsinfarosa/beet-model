@@ -5,7 +5,7 @@ import L from "leaflet";
 // import { toJS } from "mobx";
 
 // states
-import { states } from "config/states";
+import { states } from "utils/states";
 
 // styled-components
 import { MapContainer } from "./styles";
@@ -74,7 +74,6 @@ export default class TheMap extends Component {
 
     // <MyMarkersList markers={stationsWithMatchedIcons} />
     // <Rectangle bounds={toJS(state.bbox)} />
-
 
     return (
       <Flex justify="center">

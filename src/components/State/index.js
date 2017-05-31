@@ -6,7 +6,7 @@ import "antd/lib/select/style/css";
 const Option = Select.Option;
 
 // Utilities
-import { states } from "config/states";
+import { states } from "utils/states";
 
 @inject("store")
 @observer
