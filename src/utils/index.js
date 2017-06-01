@@ -345,19 +345,19 @@ export const noonToNoon = data => {
 };
 
 // Testing ----------------------------------------------------------------------------
-// import nd from "./fakeDataBeetModel.json";
-// nd.map(e => console.log(e))
-// const ndTp = nd.map(e => e.tp);
-// let tp = [];
-// while (ndTp.length > 24) {
-//   tp.push(ndTp.splice(12, 24));
-// }
-// const ndRh = nd.map(e => e.rh);
-// let rh = [];
-// while (ndRh.length > 24) {
-//   rh.push(ndRh.splice(12, 24));
-// }
-// ------------------------------------------------------------------------------------
+import nd from "./fakeDataBeetModel.json";
+nd.map(e => console.log(e));
+const ndTp = nd.map(e => e.tp);
+let tp = [];
+while (ndTp.length > 24) {
+  tp.push(ndTp.splice(12, 24));
+}
+const ndRh = nd.map(e => e.rh);
+let rh = [];
+while (ndRh.length > 24) {
+  rh.push(ndRh.splice(12, 24));
+}
+//------------------------------------------------------------------------------------
 // Returns the data array (MAIN FUNCTION) ---------------------------------------------------
 export const getData = async (
   protocol,
@@ -411,11 +411,11 @@ export const getData = async (
 
     // replacing missing values with sister station
     for (const [i, day] of results.entries()) {
-      results[i]["tpFinal"] = replaceMissingValues(day.tp, day.tpSis);
-      results[i]["rhFinal"] = replaceMissingValues(day.rh, day.rhSis);
+      // results[i]["tpFinal"] = replaceMissingValues(day.tp, day.tpSis);
+      // results[i]["rhFinal"] = replaceMissingValues(day.rh, day.rhSis);
 
-      // results[i]["tpFinal"] = tp[i];
-      // results[i]["rhFinal"] = rh[i];
+      results[i]["tpFinal"] = tp[i];
+      results[i]["rhFinal"] = rh[i];
 
       results[i]["lwFinal"] = replaceMissingValues(day.lw, day.lwSis);
       results[i]["ptFinal"] = replaceMissingValues(day.pt, day.ptSis);
@@ -481,16 +481,16 @@ export const getData = async (
 
     // replacing tpDiff values with forecast station temperatures (tpf)
     for (const [i, day] of results.entries()) {
-      results[i]["tpFinal"] = replaceMissingValues(
-        day.tpCurrentAndSiter,
-        day.tpForecast
-      );
+      // results[i]["tpFinal"] = replaceMissingValues(
+      //   day.tpCurrentAndSiter,
+      //   day.tpForecast
+      // );
       // Forcast data needs to have relative humidity array adjusted
-      results[i]["rhFinal"] = RHAdjustment(
-        replaceMissingValues(day.rhCurrentAndSiter, day.rhForecast)
-      );
-      // results[i]["tpFinal"] = tp[i];
-      // results[i]["rhFinal"] = rh[i];
+      // results[i]["rhFinal"] = RHAdjustment(
+      //   replaceMissingValues(day.rhCurrentAndSiter, day.rhForecast)
+      // );
+      results[i]["tpFinal"] = tp[i];
+      results[i]["rhFinal"] = rh[i];
       results[i]["ptFinal"] = replaceMissingValues(
         day.ptCurrentAndSiter,
         day.ptForecast
@@ -526,7 +526,7 @@ export const getData = async (
     if (isTpClean && isRhClean) {
       let Tmin, Tmax, Tavg, tempsAboveRH = [];
       day.rhFinal.forEach((rh, i) => {
-        if (rh >= 90) {
+        if (rh >= 85) {
           tempsAboveRH.push(day.tpFinal[i]);
         }
       });
@@ -551,7 +551,7 @@ export const getData = async (
       results[i]["cdd"] = cdd;
 
       // returns relative humidity above or equal to 90% (RH >= 90)
-      const rhAboveValues = aboveEqualToValue(day.rhFinal, 90);
+      const rhAboveValues = aboveEqualToValue(day.rhFinal, 85);
       results[i]["rhAboveValues"] = rhAboveValues;
 
       // Number of hours where relative humidity is equal to or above 90%
