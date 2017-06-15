@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import { inject, observer } from "mobx-react";
+import React, { Component } from 'react';
+import { inject, observer } from 'mobx-react';
 // import { toJS } from "mobx";
 
 // import Select from "antd/lib/select";
 // import "antd/lib/select/style/css";
 // const Option = Select.Option;
 
-@inject("store")
+@inject('store')
 @observer
 class Subject extends Component {
   // handleChange = value => {
@@ -23,7 +23,7 @@ class Subject extends Component {
   render() {
     // const { subject, subjects } = this.props.store.app;
     return (
-      <div style={{ marginBottom: "2rem" }}>
+      <div style={{ marginBottom: '2rem' }}>
         {/* <label>Disease:</label> */}
         {/* <Select
           name="subject"
@@ -42,7 +42,7 @@ class Subject extends Component {
             );
           })}
         </Select> */}
-        <h2>Cercospora beticola</h2>
+        <h2><i>Cercospora beticola</i></h2>
       </div>
     );
   }
