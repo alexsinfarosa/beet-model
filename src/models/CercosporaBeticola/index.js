@@ -402,6 +402,7 @@ export default class CercosporaBeticola extends Component {
           <Box mt={1} col={12} lg={12} md={12} sm={12}>
             {displayPlusButton
               ? <Table
+                  bordered
                   size={mobile ? 'small' : 'middle'}
                   columns={columns}
                   rowKey={record => record.dateTable}
@@ -415,6 +416,7 @@ export default class CercosporaBeticola extends Component {
                   expandedRowRender={record => description(record)}
                 />
               : <Table
+                  bordered
                   size={mobile ? 'small' : 'middle'}
                   columns={columns}
                   rowKey={record => record.dateTable}
