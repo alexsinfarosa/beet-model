@@ -13,7 +13,12 @@ import { Header, TextIcon, IconStyled, MainContent } from './styles';
 @observer
 class RightContent extends Component {
   render() {
-    const { areRequiredFieldsSet, isMap, toggleSidebar } = this.props.store.app;
+    const {
+      areRequiredFieldsSet,
+      isMap,
+      toggleSidebar,
+      state
+    } = this.props.store.app;
     return (
       <div
         style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}
@@ -40,14 +45,18 @@ class RightContent extends Component {
               </div>
             </Header>}
 
-        {areRequiredFieldsSet
-          ? <MainContent>
-              {isMap && <Map {...this.props} />}
-              {areRequiredFieldsSet && <CercosporaBeticola {...this.props} />}
-            </MainContent>
-          : <MainContent>
-              <Welcome />
-            </MainContent>}
+        <MainContent>
+          {state.name === 'All States' &&
+            <h3>
+              Click one of the icons on the map or select a state and a station
+              from the
+              left panel.
+            </h3>}
+          <br />
+
+          {isMap && <Map {...this.props} />}
+          {areRequiredFieldsSet && <CercosporaBeticola {...this.props} />}
+        </MainContent>
       </div>
     );
   }

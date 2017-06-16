@@ -21,10 +21,10 @@ class Acknowledgements extends Component {
     return (
       <Flex mt={4}>
         <Button type="default" onClick={() => this.setIsVisible(true)}>
-          Acknowledgements
+          Acknowledgments
         </Button>
         <Modal
-          title="Acknowledgements"
+          title="Acknowledgments"
           wrapClassName="vertical-center-modal"
           visible={this.isVisible}
           onOk={() => this.setIsVisible(false)}
