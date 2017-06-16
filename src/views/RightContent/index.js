@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 // components
 import Map from 'components/Map';
 import CercosporaBeticola from 'models/CercosporaBeticola';
+import Welcome from 'components/Welcome';
 
 // styled-components
 import { Header, TextIcon, IconStyled, MainContent } from './styles';
@@ -39,11 +40,14 @@ class RightContent extends Component {
               </div>
             </Header>}
 
-        <MainContent>
-          {isMap && <Map {...this.props} />}
-          {areRequiredFieldsSet && <CercosporaBeticola {...this.props} />}
-
-        </MainContent>
+        {areRequiredFieldsSet
+          ? <MainContent>
+              {isMap && <Map {...this.props} />}
+              {areRequiredFieldsSet && <CercosporaBeticola {...this.props} />}
+            </MainContent>
+          : <MainContent>
+              <Welcome />
+            </MainContent>}
       </div>
     );
   }
