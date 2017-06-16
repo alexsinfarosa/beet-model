@@ -4,7 +4,6 @@ import { inject, observer } from 'mobx-react';
 // components
 import Map from 'components/Map';
 import CercosporaBeticola from 'models/CercosporaBeticola';
-import Welcome from 'components/Welcome';
 
 // styled-components
 import { Header, TextIcon, IconStyled, MainContent } from './styles';

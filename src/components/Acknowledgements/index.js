@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { observable, action } from 'mobx';
-import { Flex, Box } from 'reflexbox';
+import { Flex } from 'reflexbox';
 
 import 'styles/shared.styl';
 

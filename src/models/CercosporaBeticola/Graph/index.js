@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import { inject, observer } from "mobx-react";
-import { computed } from "mobx";
-import { format } from "date-fns";
-import isAfter from "date-fns/is_after";
+import React, { Component } from 'react';
+import { inject, observer } from 'mobx-react';
+import { computed } from 'mobx';
+import { format } from 'date-fns';
+import isAfter from 'date-fns/is_after';
 
-import { Flex, Box } from "reflexbox";
+import { Flex, Box } from 'reflexbox';
 
 import {
   ComposedChart,
@@ -15,28 +15,32 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer
-} from "recharts";
-import CustomLabel from "./CustomLabel";
+} from 'recharts';
+import CustomLabel from './CustomLabel';
 
 // styled-components
-import { StyledTooltip } from "./styles";
+import { StyledTooltip } from './styles';
 
-@inject("store")
+@inject('store')
 @observer
 export default class Graph extends Component {
-  @computed get data() {
+  @computed
+  get data() {
     return this.props.store.app.cercosporaBeticola.slice();
   }
 
-  @computed get firstIndexAboveZero() {
+  @computed
+  get firstIndexAboveZero() {
     return this.data.findIndex(day => day.a2Day > 0);
   }
 
-  @computed get lastDayAtZero() {
+  @computed
+  get lastDayAtZero() {
     return this.data[this.firstIndexAboveZero - 1];
   }
 
-  @computed get a2DayDataAboveZero() {
+  @computed
+  get a2DayDataAboveZero() {
     const data = this.data.slice(this.firstIndexAboveZero);
     if (data.length < 8) {
       return this.data.slice(this.firstIndexAboveZero - 6);
@@ -44,7 +48,8 @@ export default class Graph extends Component {
     return data;
   }
 
-  @computed get lastDayAtZeroDate() {
+  @computed
+  get lastDayAtZeroDate() {
     if (this.lastDayAtZero) return this.lastDayAtZero.dateText;
   }
 
@@ -67,7 +72,7 @@ export default class Graph extends Component {
         // console.log(props);
         return (
           <StyledTooltip>
-            <h5>{format(label, "MMMM Do")}</h5>
+            <h5>{format(label, 'MMMM Do')}</h5>
             <p style={{ color: payload[0].payload.colorBar }}>
               {`2-Day Infection Values: ${payload[0].value}`}
             </p>
@@ -84,15 +89,15 @@ export default class Graph extends Component {
           isAfter(this.lastDayAtZero.date, `${currentYear}-01-10`) &&
           <h4>
             From
-            {" "}
-            <span style={{ color: "black" }}>
+            {' '}
+            <span style={{ color: 'black' }}>
               Jannuary 1st
             </span>
-            {" "}to{" "}
-            <span style={{ color: "black" }}>
+            {' '}to{' '}
+            <span style={{ color: 'black' }}>
               {this.lastDayAtZeroDate}
             </span>
-            ,{" "}2-Day values are zero
+            ,{' '}2-Day values are zero
           </h4>}
 
         <br />
@@ -102,7 +107,7 @@ export default class Graph extends Component {
           lg={12}
           md={12}
           sm={12}
-          style={{ margin: "0 auto" }}
+          style={{ margin: '0 auto' }}
         >
           <ResponsiveContainer width="100%" aspect={aspect}>
             <ComposedChart
@@ -113,7 +118,7 @@ export default class Graph extends Component {
               <YAxis
                 dataKey="a2Day"
                 allowDecimals={false}
-                domain={["dataMin", "dataMax"]}
+                domain={['dataMin', 'dataMax']}
               />
               <Tooltip content={renderTooltip} offset={20} />
               <Legend
@@ -123,19 +128,19 @@ export default class Graph extends Component {
                 iconSize={18}
                 iconType="rect"
                 payload={[
-                  { value: "Low", type: "rect", color: "#81C784" },
-                  { value: "Moderate", type: "rect", color: "#FCCE00" },
-                  { value: "High", type: "rect", color: "#F44336" }
+                  { value: 'Low', type: 'rect', color: '#81C784' },
+                  { value: 'Moderate', type: 'rect', color: '#FCCE00' },
+                  { value: 'High', type: 'rect', color: '#F44336' }
                 ]}
               />
-              <Bar dataKey="a2Day">
-                {this.a2DayDataAboveZero.map((e, index) => (
+              <Bar dataKey="a2Day" maxBarSize={30}>
+                {this.a2DayDataAboveZero.map((e, index) =>
                   <Cell
                     key={`cell-${index}`}
                     cursor="pointer"
                     fill={e.colorBar}
                   />
-                ))}
+                )}
               </Bar>
 
             </ComposedChart>

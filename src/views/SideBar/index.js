@@ -39,8 +39,9 @@ class SideBar extends Component {
 
   render() {
     const { subject, isGraph, isMap } = this.props.store.app;
+    const { size } = this.props;
     return (
-      <SideBarContent>
+      <SideBarContent size={size}>
         <Box mb={2} style={{ textAlign: 'center', letterSpacing: '1px' }}>
           <h3>
             <a
@@ -65,12 +66,12 @@ class SideBar extends Component {
           </Button>
         </Box>
 
-        {subject.graph &&
-          <Box mb={2} mt={2}>
-            <Button size="large" icon="bar-chart" onClick={this.toggleGraph}>
-              {isGraph ? 'Hide Graph' : 'Display Graph'}
-            </Button>
-          </Box>}
+        <Box mb={2} mt={2}>
+          <Button size="large" icon="bar-chart" onClick={this.toggleGraph}>
+            {isGraph ? 'Hide Graph' : 'Display Graph'}
+          </Button>
+        </Box>
+
         <br />
 
         <br />

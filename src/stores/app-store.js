@@ -79,6 +79,7 @@ export default class AppStore {
   @action
   setStateFromEntireMap = d => {
     this.state = states.find(state => state.postalCode === d);
+    localStorage.setItem('state', JSON.stringify(this.state));
   };
 
   // Station--------------------------------------------------------------------
