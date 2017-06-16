@@ -9,10 +9,10 @@ export default class Welcome extends Component {
   render() {
     return (
       <Flex justify="center" align="center" column>
-        <h1>Welcome to NEWA!</h1>
+        <h1>Welcome to NEWA</h1>
         <br />
         <h2>
-          Complete the selection from the panel on the left.
+          Select <i>State</i> and <i>Station</i> from the panel on the left.
         </h2>
       </Flex>
     );
