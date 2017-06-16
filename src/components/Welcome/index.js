@@ -12,7 +12,7 @@ export default class Welcome extends Component {
         <h1>Welcome to NEWA</h1>
         <br />
         <h2>
-          Select <i>State</i> and <i>Station</i> from the panel on the left.
+          Select <i>State</i> and <i>Station</i> from the left panel.
         </h2>
       </Flex>
     );
