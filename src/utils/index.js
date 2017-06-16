@@ -126,28 +126,30 @@ export const avgTwoStringNumbers = (a, b) => {
 };
 
 export const replaceNonConsecutiveMissingValues = data => {
-  return data.map(day => {
-    return day.map(param => {
-      if (Array.isArray(param)) {
-        return param.map((e, i) => {
-          if (i === 0 && e === 'M') {
-            return param[i + 1];
-          } else if (i === param.length - 1 && e === 'M') {
-            return param[i - 1];
-          } else if (
-            e === 'M' &&
-            param[i - 1] !== 'M' &&
-            param[i + 1] !== 'M'
-          ) {
-            return avgTwoStringNumbers(param[i - 1], param[i + 1]);
-          } else {
-            return e;
-          }
-        });
-      }
-      return param;
+  if (data) {
+    return data.map(day => {
+      return day.map(param => {
+        if (Array.isArray(param)) {
+          return param.map((e, i) => {
+            if (i === 0 && e === 'M') {
+              return param[i + 1];
+            } else if (i === param.length - 1 && e === 'M') {
+              return param[i - 1];
+            } else if (
+              e === 'M' &&
+              param[i - 1] !== 'M' &&
+              param[i + 1] !== 'M'
+            ) {
+              return avgTwoStringNumbers(param[i - 1], param[i + 1]);
+            } else {
+              return e;
+            }
+          });
+        }
+        return param;
+      });
     });
-  });
+  }
 };
 
 // export const weightedAverage = arr => {
@@ -372,7 +374,7 @@ export const getData = async (
   acis = await fetchACISData(protocol, station, startDate, endDate);
   acis = replaceNonConsecutiveMissingValues(acis);
   acis = noonToNoon(acis);
-  acis.slice(0, 3).map(e => e.map(d => console.log(d)));
+  // acis.slice(0, 3).map(e => e.map(d => console.log(d)));
 
   // currentYear !== startDateYear means it is not this year, hence no forecast
   let results = [];
@@ -398,11 +400,11 @@ export const getData = async (
       currentYear,
       startDateYear
     );
-    sisterStationData.slice(0, 3).map(e => e.map(d => console.log(d)));
-    if (sisterStationData.length > 0) {
-      sisterStationData = replaceNonConsecutiveMissingValues(sisterStationData);
-      sisterStationData = noonToNoon(sisterStationData);
-    }
+    // sisterStationData.slice(0, 3).map(e => e.map(d => console.log(d)));
+    // if (sisterStationData.length > 0) {
+    sisterStationData = replaceNonConsecutiveMissingValues(sisterStationData);
+    sisterStationData = noonToNoon(sisterStationData);
+    // }
 
     // Adding to the 'day' object, sister's data
     for (const [i, day] of sisterStationData.entries()) {
