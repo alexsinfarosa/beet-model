@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import { inject, observer } from "mobx-react";
-import { when } from "mobx";
-// import { DatePicker } from "antd";
-import DatePicker from "antd/lib/date-picker";
-import "antd/lib/date-picker/style/css";
-import moment from "moment";
+import React, { Component } from 'react';
+import { inject, observer } from 'mobx-react';
+import { when } from 'mobx';
 
-@inject("store")
+import DatePicker from 'antd/lib/date-picker';
+import 'antd/lib/date-picker/style/css';
+import moment from 'moment';
+
+@inject('store')
 @observer
 class Subject extends Component {
   constructor(props) {
@@ -23,7 +23,7 @@ class Subject extends Component {
     // console.log(date, dateString);
     this.props.store.app.setEndDate(dateString);
     if (areRequiredFieldsSet && mobile) {
-      console.log("inside DatePicker");
+      console.log('inside DatePicker');
       this.props.store.app.setIsSidebarOpen(false);
       return;
     }
@@ -32,7 +32,7 @@ class Subject extends Component {
   render() {
     const { endDate } = this.props.store.app;
     return (
-      <div style={{ marginBottom: "2rem" }}>
+      <div style={{ marginBottom: '2rem' }}>
         <label>Date:</label>
         <div><small>Start Date: January 1st</small></div>
 

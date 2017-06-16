@@ -13,6 +13,7 @@ import Subject from 'components/Subject';
 import State from 'components/State';
 import Station from 'components/Station';
 import DatePicker from 'components/DatePicker';
+import Acknowledgements from 'components/Acknowledgements';
 
 import { Flex, Box } from 'reflexbox';
 import { RiskLevel } from './styles';
@@ -65,7 +66,7 @@ class SideBar extends Component {
         </Box>
 
         {subject.graph &&
-          <Box>
+          <Box mb={2} mt={2}>
             <Button size="large" icon="bar-chart" onClick={this.toggleGraph}>
               {isGraph ? 'Hide Graph' : 'Display Graph'}
             </Button>
@@ -73,7 +74,7 @@ class SideBar extends Component {
         <br />
 
         <br />
-        <h4>2-Day risk levels</h4>
+        <h4>2-Day Risk Levels</h4>
         <Flex mt={2} mb={2}>
           <RiskLevel color="#81C784">Low</RiskLevel>
           <Box ml={1}>Between 0 and 3</Box>
@@ -86,6 +87,7 @@ class SideBar extends Component {
           <RiskLevel color="#F44336">High</RiskLevel>
           <Box ml={1}>Above 6</Box>
         </Flex>
+        <Acknowledgements />
       </SideBarContent>
     );
   }

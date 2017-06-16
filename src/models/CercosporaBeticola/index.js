@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import takeRight from 'lodash/takeRight';
 import { autorun } from 'mobx';
 
-import 'styles/table.styl';
+import 'styles/shared.styl';
 import { Flex, Box } from 'reflexbox';
 
 import Table from 'antd/lib/table';
@@ -231,7 +231,7 @@ const columns = [
     ]
   },
   {
-    title: 'Accumulation Infection Values',
+    title: 'Accumulated Infection Values',
     children: [
       {
         title: '14-Day',
@@ -375,6 +375,7 @@ export default class CercosporaBeticola extends Component {
     const {
       ACISData,
       station,
+      state,
       areRequiredFieldsSet,
       cercosporaBeticola,
       isGraph,
@@ -389,12 +390,16 @@ export default class CercosporaBeticola extends Component {
             ? <h2>
                 <i>Cercospora</i> leaf spot on table beet prediction for
                 {' '}
-                <em style={{ color: '#A05C7B' }}>{station.name}</em>
+                <span style={{ color: '#A05C7B' }}>
+                  {station.name}, {state.postalCode}
+                </span>
               </h2>
             : <h3>
                 <i>Cercospora</i> leaf spot on table beet prediction for
                 {' '}
-                <em style={{ color: '#A05C7B' }}>{station.name}</em>
+                <span style={{ color: '#A05C7B' }}>
+                  {station.name}, {state.postalCode}
+                </span>
               </h3>}
         </Box>
 
