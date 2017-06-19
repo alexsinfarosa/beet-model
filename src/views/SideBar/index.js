@@ -1,28 +1,23 @@
-import React, { Component } from "react";
-import { inject, observer } from "mobx-react";
-import { CSVLink } from "react-csv";
+import React, { Component } from 'react';
+import { inject, observer } from 'mobx-react';
 
-// antd
-// import Switch from "antd/lib/switch";
-// import "antd/lib/switch/style/css";
-
-import Button from "antd/lib/button";
-import "antd/lib/button/style/css";
+import Button from 'antd/lib/button';
+import 'antd/lib/button/style/css';
 
 // components
-import Subject from "components/Subject";
-import State from "components/State";
-import Station from "components/Station";
-import DatePicker from "components/DatePicker";
-import Acknowledgements from "components/Acknowledgements";
+import Subject from 'components/Subject';
+import State from 'components/State';
+import Station from 'components/Station';
+import DatePicker from 'components/DatePicker';
+import Acknowledgements from 'components/Acknowledgements';
 
-import { Flex, Box } from "reflexbox";
-import { RiskLevel } from "./styles";
+import { Flex, Box } from 'reflexbox';
+import { RiskLevel } from './styles';
 
 // styled-components
-import { SideBarContent } from "./styles";
+import { SideBarContent } from './styles';
 
-@inject("store")
+@inject('store')
 @observer
 class SideBar extends Component {
   // toggle Map component
@@ -39,14 +34,14 @@ class SideBar extends Component {
   };
 
   render() {
-    const { isGraph, isMap, CSVData } = this.props.store.app;
+    const { isGraph, isMap } = this.props.store.app;
     const { size } = this.props;
     return (
       <SideBarContent size={size}>
-        <Box mb={2} style={{ textAlign: "center", letterSpacing: "1px" }}>
+        <Box mb={2} style={{ textAlign: 'center', letterSpacing: '1px' }}>
           <h3>
             <a
-              style={{ color: "#B31B1B" }}
+              style={{ color: '#B31B1B' }}
               href="http://www.cornell.edu/"
               target="_blank"
             >
@@ -63,13 +58,13 @@ class SideBar extends Component {
 
         <Box mb={2} mt={2}>
           <Button size="large" icon="environment-o" onClick={this.toggleMap}>
-            {isMap ? "Hide Map" : "Display Map"}
+            {isMap ? 'Hide Map' : 'Display Map'}
           </Button>
         </Box>
 
         <Box mb={2} mt={2}>
           <Button size="large" icon="bar-chart" onClick={this.toggleGraph}>
-            {isGraph ? "Hide Graph" : "Display Graph"}
+            {isGraph ? 'Hide Graph' : 'Display Graph'}
           </Button>
         </Box>
 
@@ -88,15 +83,6 @@ class SideBar extends Component {
         <Flex mt={2} mb={2}>
           <RiskLevel color="#F44336">High</RiskLevel>
           <Box ml={1}>Above 6</Box>
-        </Flex>
-        <Flex mt={2} mb={2}>
-          <CSVLink
-            data={CSVData.slice()}
-            filename={"beetModel.csv"}
-            target="_blank"
-          >
-            Download CSV
-          </CSVLink>
         </Flex>
         <Acknowledgements />
       </SideBarContent>

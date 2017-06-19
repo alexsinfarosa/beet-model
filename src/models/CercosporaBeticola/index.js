@@ -1,30 +1,31 @@
-import React, { Component } from "react";
-import { inject, observer } from "mobx-react";
-import takeRight from "lodash/takeRight";
-import { autorun } from "mobx";
+import React, { Component } from 'react';
+import { inject, observer } from 'mobx-react';
+import takeRight from 'lodash/takeRight';
+import { autorun } from 'mobx';
+import { CSVLink } from 'react-csv';
 
-import "styles/shared.styl";
-import { Flex, Box } from "reflexbox";
+import 'styles/shared.styl';
+import { Flex, Box } from 'reflexbox';
 
-import Table from "antd/lib/table";
-import "antd/lib/table/style/css";
+import Table from 'antd/lib/table';
+import 'antd/lib/table/style/css';
 
 // components
-import Graph from "./Graph";
+import Graph from './Graph';
 
 // styled-components
-import { RiskLevel, Value, Info } from "./styles";
+import { RiskLevel, Value, Info } from './styles';
 
 // To display the 'forecast text' and style the cell
 const forecastText = date => {
   return (
     <Flex justify="center" align="center" column>
       <Value>
-        {date.split("-")[0]}
+        {date.split('-')[0]}
       </Value>
 
       <Info>
-        {date.split("-")[1]}
+        {date.split('-')[1]}
       </Info>
     </Flex>
   );
@@ -34,7 +35,7 @@ const dicv = (text, record, i) => {
   return (
     <Flex justify="center" align="center">
       <Value>
-        {record.missingDay ? "No data" : text}
+        {record.missingDay ? 'No data' : text}
       </Value>
     </Flex>
   );
@@ -58,10 +59,10 @@ const a2Day = (text, record, i) => {
       <RiskLevel
         style={{
           background: record.colorBar,
-          marginLeft: "10px",
-          color: "white",
-          padding: "2px 4px",
-          borderRadius: "5px"
+          marginLeft: '10px',
+          color: 'white',
+          padding: '2px 4px',
+          borderRadius: '5px'
         }}
       >
         {record.a2DayIR}
@@ -173,17 +174,17 @@ const season = (text, record, i) => {
 const description = record => {
   if (record.missingDates.length > 0) {
     return (
-      <Flex style={{ fontSize: ".6rem" }} column>
+      <Flex style={{ fontSize: '.6rem' }} column>
         <Box col={12} lg={6} md={6} sm={12}>
           <Box col={12} lg={12} md={12} sm={12}>
             {record.missingDates.length > 1
               ? <div>
                   No data available for the following
-                  {" "}
+                  {' '}
                   {record.cumulativeMissingDays}
-                  {" "}
+                  {' '}
                   dates:
-                  {" "}
+                  {' '}
                 </div>
               : <div>No data available for the following date:</div>}
           </Box>
@@ -205,60 +206,60 @@ const description = record => {
 //columns for the model
 const columns = [
   {
-    title: "Date",
-    dataIndex: "dateTable",
-    key: "dateTable",
-    className: "table",
+    title: 'Date',
+    dataIndex: 'dateTable',
+    key: 'dateTable',
+    className: 'table',
     render: date => forecastText(date)
   },
   {
-    title: "Infection Values",
+    title: 'Infection Values',
     children: [
       {
-        title: "Daily",
-        className: "table",
-        dataIndex: "dicv",
-        key: "dicv",
+        title: 'Daily',
+        className: 'table',
+        dataIndex: 'dicv',
+        key: 'dicv',
         render: (text, record, i) => dicv(text, record, i)
       },
       {
-        title: "2-Day/Risk",
-        className: "table",
-        dataIndex: "a2Day",
-        key: "a2Day",
+        title: '2-Day/Risk',
+        className: 'table',
+        dataIndex: 'a2Day',
+        key: 'a2Day',
         render: (text, record, i) => a2Day(text, record, i)
       }
     ]
   },
   {
-    title: "Accumulated Infection Values",
+    title: 'Accumulated Infection Values',
     children: [
       {
-        title: "14-Day",
-        className: "table",
-        dataIndex: "a14Day",
-        key: "a14Day",
+        title: '14-Day',
+        className: 'table',
+        dataIndex: 'a14Day',
+        key: 'a14Day',
         render: (text, record, i) => a14Day(text, record, i)
       },
       {
-        title: "21-Day",
-        className: "table",
-        dataIndex: "a21Day",
-        key: "a21Day",
+        title: '21-Day',
+        className: 'table',
+        dataIndex: 'a21Day',
+        key: 'a21Day',
         render: (text, record, i) => a21Day(text, record, i)
       },
       {
         title: `Season`,
-        className: "table",
-        dataIndex: "season",
-        key: "season",
+        className: 'table',
+        dataIndex: 'season',
+        key: 'season',
         render: (text, record, i) => season(text, record, i)
       }
     ]
   }
 ];
 
-@inject("store")
+@inject('store')
 @observer
 export default class CercosporaBeticola extends Component {
   constructor(props) {
@@ -286,21 +287,21 @@ export default class CercosporaBeticola extends Component {
       }
 
       // a2Day Infection Risk
-      let a2DayIR = "";
-      let color = "";
-      let colorBar = "";
+      let a2DayIR = '';
+      let color = '';
+      let colorBar = '';
       if (a2Day >= 0 && a2Day <= 3) {
-        a2DayIR = "Low";
-        color = "low";
-        colorBar = "#81C784";
+        a2DayIR = 'Low';
+        color = 'low';
+        colorBar = '#81C784';
       } else if (a2Day >= 4 && a2Day <= 6) {
-        a2DayIR = "Moderate";
-        color = "moderate";
-        colorBar = "#FCCE00";
+        a2DayIR = 'Moderate';
+        color = 'moderate';
+        colorBar = '#FCCE00';
       } else {
-        a2DayIR = "High";
-        color = "high";
-        colorBar = "#F44336";
+        a2DayIR = 'High';
+        color = 'high';
+        colorBar = '#F44336';
       }
 
       // 14-Day Accumulation Infection Values
@@ -351,26 +352,26 @@ export default class CercosporaBeticola extends Component {
       season += day.dicv;
 
       // building the object
-      data["date"] = day.date;
-      data["dateTable"] = day.dateTable;
-      data["dateGraph"] = day.dateGraph;
-      data["dateText"] = day.dateText;
-      data["dicv"] = parseInt(day.dicv, 10);
-      data["a2Day"] = parseInt(a2Day, 10);
-      data["a2DayIR"] = a2DayIR;
-      data["color"] = color;
-      data["colorBar"] = colorBar;
-      data["a14Day"] = parseInt(a14Day, 10);
-      data["a14DayMissingDays"] = a14DayMissingDays;
-      data["a21Day"] = parseInt(a21Day, 10);
-      data["a21DayMissingDays"] = a21DayMissingDays;
-      data["season"] = parseInt(season, 10);
-      data["missingDay"] = day.missingDay;
-      data["cumulativeMissingDays"] = day.cumulativeMissingDays;
-      data["missingDates"] = description;
+      data['date'] = day.date;
+      data['dateTable'] = day.dateTable;
+      data['dateGraph'] = day.dateGraph;
+      data['dateText'] = day.dateText;
+      data['dicv'] = parseInt(day.dicv, 10);
+      data['a2Day'] = parseInt(a2Day, 10);
+      data['a2DayIR'] = a2DayIR;
+      data['color'] = color;
+      data['colorBar'] = colorBar;
+      data['a14Day'] = parseInt(a14Day, 10);
+      data['a14DayMissingDays'] = a14DayMissingDays;
+      data['a21Day'] = parseInt(a21Day, 10);
+      data['a21DayMissingDays'] = a21DayMissingDays;
+      data['season'] = parseInt(season, 10);
+      data['missingDay'] = day.missingDay;
+      data['cumulativeMissingDays'] = day.cumulativeMissingDays;
+      data['missingDates'] = description;
       this.props.store.app.setCercosporaBeticola(data);
-      this.props.store.app.setCSVData();
     }
+    this.props.store.app.setCSVData();
   };
 
   render() {
@@ -381,37 +382,51 @@ export default class CercosporaBeticola extends Component {
       areRequiredFieldsSet,
       cercosporaBeticola,
       isGraph,
-      displayPlusButton
+      displayPlusButton,
+      CSVData
     } = this.props.store.app;
     // console.log(cercosporaBeticola.slice());
     const { mobile } = this.props;
 
     return (
       <Flex column>
-        <Box>
-          {!mobile
-            ? <h2>
-                <i>Cercospora</i> leaf spot on table beet prediction for
-                {" "}
-                <span style={{ color: "#A05C7B" }}>
-                  {station.name}, {state.postalCode}
-                </span>
-              </h2>
-            : <h3>
-                <i>Cercospora</i> leaf spot on table beet prediction for
-                {" "}
-                <span style={{ color: "#A05C7B" }}>
-                  {station.name}, {state.postalCode}
-                </span>
-              </h3>}
-        </Box>
+        <Flex justify="space-between" align="center">
+          <Box>
+            {!mobile
+              ? <h2>
+                  <i>Cercospora</i> leaf spot on table beet prediction for
+                  {' '}
+                  <span style={{ color: '#A05C7B' }}>
+                    {station.name}, {state.postalCode}
+                  </span>
+                </h2>
+              : <h3>
+                  <i>Cercospora</i> leaf spot on table beet prediction for
+                  {' '}
+                  <span style={{ color: '#A05C7B' }}>
+                    {station.name}, {state.postalCode}
+                  </span>
+                </h3>}
+          </Box>
+
+          <Box>
+            <CSVLink
+              data={CSVData.slice()}
+              filename={'beetModel.csv'}
+              target="_blank"
+            >
+              Download CSV
+            </CSVLink>
+          </Box>
+
+        </Flex>
 
         <Flex justify="center">
           <Box mt={1} col={12} lg={12} md={12} sm={12}>
             {displayPlusButton
               ? <Table
                   bordered
-                  size={mobile ? "small" : "middle"}
+                  size={mobile ? 'small' : 'middle'}
                   columns={columns}
                   rowKey={record => record.dateTable}
                   loading={ACISData.length === 0}
@@ -425,7 +440,7 @@ export default class CercosporaBeticola extends Component {
                 />
               : <Table
                   bordered
-                  size={mobile ? "small" : "middle"}
+                  size={mobile ? 'small' : 'middle'}
                   columns={columns}
                   rowKey={record => record.dateTable}
                   loading={ACISData.length === 0}
