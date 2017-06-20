@@ -29,9 +29,9 @@ export default class TheMap extends Component {
     );
 
     if (state.name === 'All States') {
-      console.log(selectedStation);
       this.props.store.app.setStateFromEntireMap(selectedStation.state);
       this.props.store.app.setStation(selectedStation.name);
+      this.props.store.app.setIsMap();
       return;
     }
 
