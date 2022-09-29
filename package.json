@@ -25,7 +25,7 @@
     "react-leaflet": "^1.1.0",
     "react-router-dom": "^4.1.1",
     "react-sidebar": "^2.3.2",
-    "recharts": "^0.21.2",
+    "recharts": "^2.1.14",
     "reflexbox": "^2.2.3",
     "styled-components": "^1.4.4"
   },
